@@ -1,32 +1,13 @@
 /* =========================================
-   Admin Common List — Clean Blue Theme
-   (HTML 구조/클래스 100% 호환)
+   Admin Common List — Clean Blue Theme (Fixed Colors)
    ========================================= */
-
-/* 색 변수 */
-:root {
-  --brand-50: #eef4ff;
-  --brand-100: #e6edff;
-  --brand-200: #cfe0ff;
-  --brand-300: #9fbafc;
-  --brand-400: #6287ef;
-  --brand-500: #2d6cdf;
-  /* 포인트 */
-  --brand-600: #2157c7;
-  --text-strong: #1f2a44;
-  --text: #334155;
-  --muted: #8aa0c8;
-  --border: #e6eaf2;
-  --bg: #f6f8fc;
-  --white: #fff;
-}
 
 /* 전체 배경/타이포 */
 body {
   font-family: 'Noto Sans KR', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   margin: 0;
-  background: linear-gradient(180deg, #f9fbff, var(--bg));
-  color: var(--text);
+  background: linear-gradient(180deg, #f9fbff, #f6f8fc);
+  color: #334155;
 }
 
 /* 메인 카드 컨테이너 */
@@ -41,7 +22,7 @@ body {
   margin: 0 0 18px;
   font-size: clamp(20px, 2.3vw, 28px);
   font-weight: 800;
-  color: var(--text-strong);
+  color: #1f2a44;
   letter-spacing: .015em;
 }
 
@@ -52,8 +33,8 @@ body {
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
-  background: var(--white);
-  border: 1px solid var(--border);
+  background: #fff;
+  border: 1px solid #e6eaf2;
   border-radius: 14px;
   box-shadow: 0 4px 18px rgba(45, 108, 223, .06);
   margin-bottom: 16px;
@@ -68,7 +49,7 @@ body {
 
 .filter-box label {
   font-size: 14px;
-  color: var(--muted);
+  color: #0b518f;
 }
 
 .filter-box select {
@@ -76,21 +57,20 @@ body {
   -webkit-appearance: none;
   -moz-appearance: none;
   position: relative;
-
   padding: 10px 36px 10px 12px;
-  border: 1px solid var(--brand-200);
+  border: 1px solid #cfe0ff;
   border-radius: 10px;
   background:
-    linear-gradient(180deg, var(--brand-50), var(--brand-100)),
+    linear-gradient(180deg, #eef4ff, #e6edff),
     url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="9" viewBox="0 0 24 24" fill="none" stroke="%232157c7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>') no-repeat right 10px center/14px;
-  color: var(--text-strong);
+  color: #1f2a44;
   font-weight: 600;
   cursor: pointer;
   transition: border-color .18s ease, box-shadow .18s ease, transform .08s ease;
 }
 
 .filter-box select:hover {
-  border-color: var(--brand-300);
+  border-color: #9fbafc;
   box-shadow: 0 6px 20px rgba(45, 108, 223, .10);
 }
 
@@ -102,7 +82,7 @@ body {
 .btn-create {
   padding: 10px 14px;
   border-radius: 10px;
-  background: linear-gradient(180deg, var(--brand-500), var(--brand-600));
+  background: #5ebc44;
   color: #fff;
   border: none;
   font-weight: 700;
@@ -112,7 +92,7 @@ body {
 }
 
 .btn-create:hover {
-  filter: brightness(1.06);
+  background-color: #56ae3e;
   box-shadow: 0 8px 22px rgba(45, 108, 223, .28);
 }
 
@@ -124,21 +104,20 @@ body {
 .approval-table {
   width: 100%;
   border-collapse: collapse;
-  background: var(--white);
-  border: 1px solid var(--border);
+  background: #fff;
+  border: 1px solid #e6eaf2;
   border-radius: 14px;
   overflow: hidden;
-  /* radius 적용 */
   box-shadow: 0 8px 28px rgba(22, 48, 103, .08);
 }
 
 /* 헤더 */
 .approval-table thead th {
-  background: linear-gradient(180deg, var(--brand-500), var(--brand-600));
+  background: linear-gradient(180deg, #66a3dc, #3d86c6);
   color: #fff;
   padding: 14px 12px;
-  font-size: 13.5px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 600;
   letter-spacing: .02em;
   text-align: center;
   border-bottom: 1px solid rgba(255, 255, 255, .2);
@@ -147,7 +126,7 @@ body {
 /* 셀 */
 .approval-table td {
   padding: 14px 12px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid #e6eaf2;
   text-align: center;
   font-size: 14px;
 }
@@ -158,15 +137,15 @@ body {
 }
 
 .approval-table tbody tr:hover {
-  background: linear-gradient(180deg, var(--brand-50), var(--brand-100));
+  background: linear-gradient(180deg, #eef4ff, #e6edff);
 }
 
-/* 첫/마지막 열 좌/우 정렬 가독성 */
+/* 첫/마지막 열 */
 .approval-table td:first-child {
   text-align: left;
   padding-left: 18px;
   font-weight: 700;
-  color: var(--text-strong);
+  color: #1f2a44;
 }
 
 .approval-table th:first-child {
@@ -181,7 +160,7 @@ body {
   font-weight: 600;
 }
 
-/* =============== 상태 배지 =============== */
+/* 상태 배지 */
 .status {
   display: inline-flex;
   align-items: center;
@@ -203,20 +182,18 @@ body {
 }
 
 .status.active {
-  /* 승인 or 개강 */
   background: #ecfdf5;
   color: #047857;
   border-color: #c6f6e2;
 }
 
 .status.inactive {
-  /* 반려 or 종강 */
   background: #fef2f2;
   color: #b91c1c;
   border-color: #fecaca;
 }
 
-/* =============== 강사 승인 카드 (관리자 대시보드에서 사용) =============== */
+/* 강사 승인 카드 */
 .instructor-cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -225,8 +202,8 @@ body {
 }
 
 .instructor-card {
-  background: var(--white);
-  border: 1px solid var(--border);
+  background: #fff;
+  border: 1px solid #e6eaf2;
   border-radius: 14px;
   padding: 16px 14px;
   text-align: center;
@@ -236,14 +213,14 @@ body {
 
 .instructor-card:hover {
   transform: translateY(-2px);
-  border-color: var(--brand-300);
+  border-color: #9fbafc;
   box-shadow: 0 10px 28px rgba(22, 48, 103, .10);
 }
 
 .instructor-name {
   font-size: 16px;
   font-weight: 800;
-  color: var(--text-strong);
+  color: #1f2a44;
   margin: 4px 0 8px;
 }
 
@@ -251,7 +228,7 @@ body {
   margin-top: 4px;
 }
 
-/* =============== 반응형 =============== */
+/* 반응형 */
 @media (max-width: 860px) {
   .filter-box {
     flex-direction: column;
@@ -269,7 +246,7 @@ body {
   }
 }
 
-/* =============== 접근성 포커스 =============== */
+/* 포커스 */
 .approval-table a:focus-visible,
 .btn-create:focus-visible,
 select:focus-visible {
@@ -277,24 +254,16 @@ select:focus-visible {
   box-shadow:
     0 0 0 3px rgba(45, 108, 223, .25),
     0 6px 18px rgba(45, 108, 223, .20);
-  border-color: var(--brand-500);
+  border-color: #2075bf;
 }
 
-/* =============== 다크모드 =============== */
+/* 다크모드 */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0f1420;
-    --white: #101828;
-    --text: #d6e1ff;
-    --text-strong: #eff4ff;
-    --border: #20304a;
-  }
-
   .filter-box,
   .approval-table,
   .instructor-card {
-    background: var(--white);
-    border-color: var(--border);
+    background: #101828;
+    border-color: #20304a;
   }
 
   .approval-table thead th {
@@ -416,7 +385,7 @@ select:focus-visible {
   font-size: 13px;
   font-weight: 700;
   letter-spacing: .01em;
-  color: #2157c7;
+  color: #2075bf;
   text-decoration: none;
   background: linear-gradient(180deg, #eef4ff, #e6edff);
   border: 1px solid #cfe0ff;
