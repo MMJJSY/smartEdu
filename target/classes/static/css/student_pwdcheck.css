@@ -36,7 +36,6 @@ body{
 /* 상단 제목영역 */
 .pwcheck-header{
   background: #fff;
-  border-bottom: 1px solid var(--line);
   padding: 20px 24px;
 }
 .pwcheck-header h1{

@@ -32,14 +32,13 @@ body{
 .pwdedit-container{
   min-height: 100vh;
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto auto; /* 섹션도 내용 높이만큼 */
   align-content: start;
-  background: var(--bg);
+  background: #fff;
 }
 
 .pwdedit-header{
   background: #fff;
-  border-bottom: 1px solid var(--line);
   padding: 22px 24px;
 }
 .pwdedit-header h1{
