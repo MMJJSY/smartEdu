@@ -92,4 +92,14 @@
     WHERE student_id = #{param1}
   </delete>
 
+  <!-- 강의 시청 시 결제 상태를 NORMAL -> CANCELLED로 변경 (이미 CANCELLED면 무시) -->
+  <update id="cancelPaymentOnView">
+      UPDATE Payments
+      SET status = 'CANCELLED',
+          updated_at = CURRENT_TIMESTAMP
+      WHERE student_id = #{studentId}
+        AND course_id = #{courseId}
+        AND status = 'NORMAL'
+  </update>
+
 </mapper>

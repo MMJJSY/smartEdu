@@ -90,7 +90,8 @@
             <td th:text="${lec.title}"></td>
             <td>
               <button class="btn-play"
-                th:onclick="|window.open('@{/courses/getVideoPage(lectureId=${lec.lectureId})}', '_blank', 'width=960,height=540,resizable=yes');|">
+                th:attr="data-lecture-id=${lec.lectureId}, data-course-id=${course.courseId}"
+                onclick="openVideoAndCancel(this)">
                 ▶ 보기
               </button>
             </td>
@@ -196,6 +197,31 @@
 
       document.body.appendChild(form);
       form.submit();
+    }
+    // ✅ 강의 시청 시 결제 상태 변경 후 동영상 팝업
+    function openVideoAndCancel(button) {
+      const lectureId = button.getAttribute('data-lecture-id');
+      const courseId = button.getAttribute('data-course-id');
+      
+      // 동영상 팝업 열기
+      const videoUrl = '/courses/getVideoPage?lectureId=' + lectureId;
+      window.open(videoUrl, '_blank', 'width=960,height=540,resizable=yes');
+
+      // 결제 상태 변경 (비동기)
+      fetch('/payment/cancelOnView', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'courseId=' + courseId
+      })
+      .then(response => response.text())
+      .then(result => {
+        console.log('Payment status update:', result);
+      })
+      .catch(error => {
+        console.error('Payment status update error:', error);
+      });
     }
   </script>
 

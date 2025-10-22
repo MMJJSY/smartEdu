@@ -51,7 +51,6 @@ public class PaymentController {
         if (studentId == null) {
             return "redirect:/common/loginForm?retUrl=/payment";
         }
-        // (선택) 본인 결제건인지 검증 로직 추가 권장
         paymentService.refund(cmd.getPaymentId());
         return "redirect:/payment";
     }
@@ -65,11 +64,8 @@ public class PaymentController {
         }
         try {
             paymentService.checkoutAllFromCart(studentId);
-            // ✅ 플래시 알림 (카트에서 표시)
             rttr.addFlashAttribute("msg", "결제가 완료되었습니다.");
             rttr.addFlashAttribute("msgType", "success");
-
-            // ✅ 선택 알림용 파라미터 추가 → /cart?paid=1
             rttr.addAttribute("paid", "1");
         } catch (SQLException e) {
             rttr.addFlashAttribute("msg", e.getMessage());
@@ -78,7 +74,20 @@ public class PaymentController {
         return "redirect:/cart";
     }
 
-
-
-
+    // ✅ 강의 시청 시 결제 상태 변경 (NORMAL -> CANCELLED)
+    @PostMapping("/cancelOnView")
+    @ResponseBody
+    public String cancelPaymentOnView(@RequestParam int courseId, HttpSession session) {
+        try {
+            Integer studentId = getLoginStudentId(session);
+            if (studentId == null) {
+                return "UNAUTHORIZED";
+            }
+            paymentService.cancelPaymentOnView(studentId, courseId);
+            return "SUCCESS";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "ERROR";
+        }
+    }
 }

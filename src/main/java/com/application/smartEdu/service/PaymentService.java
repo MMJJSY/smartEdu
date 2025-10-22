@@ -15,4 +15,7 @@ public interface PaymentService {
 
     // 장바구니 전체 결제 (중복 있으면 예외로 강좌명 안내)
     void checkoutAllFromCart(int studentId) throws SQLException;
+
+    // ✅ 강의 시청 시 결제 상태 변경 (NORMAL -> CANCELLED)
+    void cancelPaymentOnView(int studentId, int courseId) throws SQLException;
 }

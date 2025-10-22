@@ -34,7 +34,6 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void checkoutAllFromCart(int studentId) throws SQLException {
-        // 5) 중복 검사 (DUPLICATE / OK)
         List<Map<String, Object>> rows = paymentDAO.checkoutFromCartOnce(studentId);
         if (rows == null || rows.isEmpty()) throw new SQLException("결제 처리 결과가 비어 있습니다.");
 
@@ -52,8 +51,14 @@ public class PaymentServiceImpl implements PaymentService {
             throw new SQLException("알 수 없는 결제 처리 상태입니다: " + status);
         }
 
-        // ✅ OK일 때만 3 → 4 실행
-        paymentDAO.insertPaymentsFromCartByStudentId(studentId); // 3)
-        paymentDAO.clearCartByStudentId(studentId);              // 4)
+        paymentDAO.insertPaymentsFromCartByStudentId(studentId);
+        paymentDAO.clearCartByStudentId(studentId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void cancelPaymentOnView(int studentId, int courseId) throws SQLException {
+        // NORMAL -> CANCELLED 변경 (이미 CANCELLED면 0 반환되지만 예외 발생시키지 않음)
+        paymentDAO.cancelPaymentOnView(studentId, courseId);
     }
 }

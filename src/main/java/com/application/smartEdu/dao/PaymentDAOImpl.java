@@ -1,6 +1,7 @@
 package com.application.smartEdu.dao;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,5 +40,13 @@ public class PaymentDAOImpl implements PaymentDAO {
     @Override
     public List<Map<String, Object>> checkoutFromCartOnce(int studentId) throws SQLException {
         return sqlSession.selectList("Payment-Mapper.checkoutFromCartOnce", studentId);
+    }
+
+    @Override
+    public int cancelPaymentOnView(int studentId, int courseId) throws SQLException {
+        Map<String, Object> params = new HashMap<>();
+        params.put("studentId", studentId);
+        params.put("courseId", courseId);
+        return sqlSession.update("Payment-Mapper.cancelPaymentOnView", params);
     }
 }
