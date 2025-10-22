@@ -1,0 +1,113 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Member-Mapper">
+
+
+<sql id="search">
+    <if test="keyword != null and keyword != ''">
+        <choose>
+            <when test="searchType == 'n'.toString()">
+                AND m.name LIKE CONCAT('%', #{keyword}, '%')
+            </when>
+            <when test="searchType == 'e'.toString()">
+                AND m.email LIKE CONCAT('%', #{keyword}, '%')
+            </when>
+            <when test="searchType == 's'.toString()">
+                AND i.pending_status LIKE CONCAT('%', #{keyword}, '%')
+            </when>
+            <otherwise>
+                AND (m.name LIKE CONCAT('%', #{keyword}, '%')
+                     OR m.email LIKE CONCAT('%', #{keyword}, '%'))
+            </otherwise>
+        </choose>
+    </if>
+</sql>
+
+ <!-- ✅ 승인 대기중 강사 조회 (페이징 + 검색) -->
+    <select id="findPendingInstructors" parameterType="pageMaker" resultType="instructor">
+        SELECT
+            i.instructor_id,
+            i.resume,
+            i.pending_status,
+            m.name,
+            m.email
+        FROM Instructors i
+        JOIN Members m ON i.instructor_id = m.member_id
+        WHERE 1=1
+
+        <!-- ✅ 상태 필터 -->
+        <if test="keyword != null and keyword != ''">
+            AND i.pending_status = #{keyword}
+        </if>
+
+        ORDER BY i.instructor_id DESC
+        LIMIT #{startRow}, #{perPageNum}
+    </select>
+
+    <!-- ✅ 전체 개수 조회 (페이징용) -->
+    <select id="countPendingInstructors" parameterType="pageMaker" resultType="int">
+        SELECT COUNT(*)
+        FROM Instructors i
+        JOIN Members m ON i.instructor_id = m.member_id
+        WHERE 1=1
+
+        <if test="keyword != null and keyword != ''">
+            AND i.pending_status = #{keyword}
+        </if>
+    </select>
+
+    <!-- ✅ 승인 상태 변경 -->
+    <update id="updatePendingStatus" parameterType="map">
+        UPDATE Instructors
+        SET pending_status = #{pendingStatus}
+        WHERE instructor_id = #{instructorId}
+    </update>
+
+    <!-- ✅ 강사 상세보기 -->
+    <select id="selectInstructorById" resultType="instructor" parameterType="int">
+        SELECT 
+            i.instructor_id,
+            i.resume,
+            i.pending_status,
+            m.name,
+            m.email,
+            m.phone
+        FROM Instructors i
+        INNER JOIN Members m ON i.instructor_id = m.member_id
+        WHERE i.instructor_id = #{value}
+    </select>
+
+<insert id="insertMember" parameterType="member" 
+useGeneratedKeys="true" keyProperty="memberId">
+    insert into members(email, pwd, name, phone, role, status)
+    values(#{email}, #{pwd}, #{name}, #{phone}, #{role}, #{status}) 
+</insert>
+
+<insert id="insertInstructor" parameterType="instructor">
+  INSERT INTO instructors (instructor_id, resume, pending_status)
+  VALUES (#{instructorId}, #{resume}, #{pendingStatus})
+  ON DUPLICATE KEY UPDATE
+    resume = VALUES(resume),
+    pending_status = VALUES(pending_status)
+</insert>
+
+<update id="updateMember" parameterType="member">
+    update members 
+    set pwd=#{pwd}
+    where member_id = #{memberId}
+</update>
+
+<update id="withdrawMember" parameterType="member">
+     update members 
+     set status = 'WITHDRAW' 
+     WHERE member_id = #{member_id} 
+    </update>
+
+<select id="selectMemberByEmail" resultType="member" parameterType="str">
+    select * 
+    from members
+    where email = #{email}
+</select>
+
+
+</mapper>

@@ -1,0 +1,253 @@
+@charset "utf-8";
+
+/* ============= 디자인 토큰 ============= */
+:root {
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --ink: #0f172a;
+  --muted: #64748b;
+  --line: #e5e7eb;
+
+  --primary: #2563eb;
+  --primary-weak: #e8f0ff;
+  --danger: #ef4444;
+  --success: #16a34a;
+
+  --radius: 16px;
+  --shadow: 0 10px 30px rgba(2, 6, 23, .06);
+}
+
+/* ============= 리셋 기본 ============= */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Noto Sans KR", "맑은 고딕", system-ui, sans-serif;
+  color: var(--ink);
+  background: #fff;
+}
+
+/* ============= 공통 레이아웃 ============= */
+.mypage-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+/* 공통 카드 래퍼 (pwcheck / pwdedit 둘 다 사용) */
+.auth-card {
+  width: 100%;
+  max-width: 760px;
+  margin: 40px auto 64px;
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 28px 32px;
+}
+
+/* 상단 헤더(공통) */
+.auth-header {
+  width: 100%;
+  background: #fff;
+  padding: 20px 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, .2);
+}
+
+.auth-header h1 {
+  margin: 0 0 20px;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--primary);
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--primary-weak);
+}
+
+/* 카드 본문(공통) */
+.auth-body {
+  width: 100%;
+  max-width: 760px;
+  margin: 40px auto 64px;
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 28px 32px;
+}
+
+/* ============= 비밀번호 확인 (pwcheck) ============= */
+.pwcheck-container .auth-body {
+  display: grid;
+  gap: 16px;
+}
+
+.pwcheck-form .input-group {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.pwcheck-form input[type="password"] {
+  height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0 14px;
+  font-size: 15px;
+  background: #fff;
+}
+
+.pwcheck-form input[type="password"]:focus-visible {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, .12);
+  background: #fff;
+  outline: none;
+}
+
+/* ============= 비밀번호 변경 (pwdedit) ============= */
+.pwdedit-container .auth-body {
+  display: grid;
+  gap: 18px;
+}
+
+.pwdedit-form {
+  display: grid;
+  gap: 18px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+.form-row label {
+  padding-top: 10px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.input-wrapper {
+  display: grid;
+  gap: 8px;
+}
+
+.input-wrapper input[type="password"] {
+  height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0 14px;
+  font-size: 15px;
+  background: #fff;
+}
+
+.input-wrapper input[type="password"]:focus-visible {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, .12);
+  background: #fff;
+  outline: none;
+}
+
+/* 힌트/메시지 */
+.hint {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+#pwMsg {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#pwMsg.ok {
+  color: var(--success);
+}
+
+#pwMsg.err {
+  color: var(--danger);
+}
+
+/* 액션 영역 + 버튼 */
+.form-actions {
+  margin-top: 6px;
+}
+
+button,
+.submit-btn {
+  height: 44px;
+  min-width: 120px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .03s ease, box-shadow .2s ease, background-color .2s ease;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, .25);
+}
+
+button:hover,
+.submit-btn:hover {
+  filter: brightness(.98);
+}
+
+button:active,
+.submit-btn:active {
+  transform: translateY(1px);
+}
+
+/* 비활성/로딩 상태(선택) */
+button[aria-busy="true"] {
+  position: relative;
+  pointer-events: none;
+  opacity: .85;
+}
+
+button[aria-busy="true"]::after {
+  content: "";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, .7);
+  border-top-color: transparent;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: translateY(-50%) rotate(1turn);
+  }
+}
+
+/* ============= 반응형 ============= */
+@media (max-width: 640px) {
+  .auth-card {
+    max-width: 560px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row label {
+    padding-top: 0;
+  }
+
+  .pwcheck-form .input-group {
+    grid-template-columns: 1fr;
+  }
+}

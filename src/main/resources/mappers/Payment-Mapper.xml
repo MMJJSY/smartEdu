@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Payment-Mapper">
+
+  <!-- 1) 결제 + 강좌 JOIN 목록 (학생별, REFUNDED 제외) -->
+  <select id="selectPaymentsWithCourseByStudentId"
+          parameterType="int"
+          resultType="paymentItem">
+    SELECT
+      p.payment_id,
+      p.student_id,
+      p.course_id,
+      CAST(p.course_amount AS DECIMAL(12,0)) AS course_amount,
+      p.status,
+      p.created_at,
+      p.updated_at,
+      cr.title       AS course_title,
+      cr.category    AS course_category,
+      cr.img         AS course_img,
+      m.name         AS instructor_name,
+      CAST(cr.price AS DECIMAL(12,0)) AS course_price
+    FROM Payments p
+    JOIN Courses cr ON cr.course_id = p.course_id
+    JOIN Members m  ON m.member_id = cr.instructor_id
+    WHERE p.student_id = #{param1}
+      AND p.status != 'REFUNDED'
+    ORDER BY p.created_at DESC, p.payment_id DESC
+  </select>
+
+  <!-- 2) 환불 실행: NORMAL → REFUNDED -->
+  <update id="refundPayment" parameterType="int">
+    UPDATE Payments
+    SET status = 'REFUNDED',
+        updated_at = CURRENT_TIMESTAMP
+    WHERE payment_id = #{param1}
+      AND status = 'NORMAL'
+  </update>
+
+  <!-- 3) 사전 점검: 장바구니에 '이미 결제(REFUNDED 제외)'된 동일 강좌가 있으면 DUPLICATE 목록, 없으면 OK 1행 -->
+  <select id="checkoutFromCartOnce" parameterType="int" resultType="map">
+    SELECT
+      'DUPLICATE' AS status,
+      c.title     AS payload
+    FROM Payments p
+    JOIN Carts    ca ON ca.student_id = p.student_id AND ca.course_id = p.course_id
+    JOIN Courses  c  ON c.course_id    = p.course_id
+    WHERE p.student_id = #{param1}
+      AND p.status != 'REFUNDED'
+    GROUP BY c.title
+
+    UNION ALL
+
+    SELECT
+      'OK'   AS status,
+      NULL   AS payload
+    FROM DUAL
+    WHERE NOT EXISTS (
+      SELECT 1
+      FROM Payments p2
+      JOIN Carts   ca2 ON ca2.student_id = p2.student_id AND ca2.course_id = p2.course_id
+      WHERE p2.student_id = #{param1}
+        AND p2.status != 'REFUNDED'
+    )
+  </select>
+
+  <!-- 4) 장바구니 → 결제내역 일괄 등록 (DB 레벨 중복 차단: NOT EXISTS) -->
+<insert id="insertPaymentsFromCartByStudentId" parameterType="int">
+  INSERT INTO Payments (student_id, course_id, course_amount, status, created_at, updated_at)
+  SELECT 
+    c.student_id,
+    c.course_id,
+    CAST(cr.price AS DECIMAL(12,0)) AS course_amount,  -- ✅ 장바구니 금액 대신 '강좌 가격' 사용
+    'NORMAL',
+    NOW(),
+    NOW()
+  FROM Carts c
+  JOIN Courses cr ON cr.course_id = c.course_id       -- ✅ 강좌 조인 추가
+  WHERE c.student_id = #{param1}
+    AND NOT EXISTS (
+      SELECT 1
+      FROM Payments p
+      WHERE p.student_id = c.student_id
+        AND p.course_id  = c.course_id
+        AND p.status != 'REFUNDED'
+    )
+</insert>
+
+  <!-- 5) 결제 후 해당 학생 장바구니 비우기 -->
+  <delete id="clearCartByStudentId" parameterType="int">
+    DELETE FROM Carts
+    WHERE student_id = #{param1}
+  </delete>
+
+</mapper>

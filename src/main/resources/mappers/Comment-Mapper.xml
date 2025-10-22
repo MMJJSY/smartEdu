@@ -1,0 +1,43 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Comment-Mapper">
+
+    <!-- 댓글 추가 -->
+    <insert id="insertComment" parameterType="comment" useGeneratedKeys="true" keyProperty="commentId">
+        insert into comments (question_id, member_id, parent_id, content) 
+        values(#{questionId}, #{memberId},#{parentId},#{content})
+    </insert>
+
+    <!-- 댓글 수정 -->
+    <update id="updateComment" parameterType="comment">
+        update comments
+        set content = #{content},
+        status = "EDITED"
+        where comment_id = #{commentId}
+    </update>
+
+    <!-- 댓글 삭제 -->
+    <update id="deleteComment" parameterType="comment">
+        update comments
+        set status = "DELETED",
+        deleted_at = now()
+        where comment_id = #{commentId}
+    </update>
+
+    <!-- 댓글 리스트 -->
+    <select id="selectCommentListByQuestionId" parameterType="int" resultType="comment"> 
+    select
+    c.comment_id, c.parent_id, 
+    case when c.status = 'DELETED' then null else c.content end as content, 
+    c.status, c.created_at, c.updated_at, m.name as member_name from comments c join
+    members m on c.member_id = m.member_id where c.question_id = #{questionId} order by
+    coalesce(c.parent_id, c.comment_id), c.created_at </select>
+
+    <!-- 댓글 조회 -->
+    <select id="selectCommentById" parameterType="int" resultType="comment" >
+        select *
+        from comments
+        where comment_id =#{commentId}
+    </select>
+ 
+</mapper>

@@ -1,0 +1,217 @@
+@charset "utf-8";
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  font-family: "맑은 고딕";
+}
+/*불릿 제거하고 파란줄 없애깅*/
+ul, ol {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+}
+/* =========================
+   HEADER 일단은 고정?
+   ========================= */
+
+/* ===== 헤더 높이 변수 (전역) ===== */
+:root {
+  --header-h: 120px; /* header 실제 높이와 동일하게 유지 */
+}
+
+/* header 높이를 변수로 통일 */
+header {
+  height: var(--header-h) !important;
+}
+  
+
+header {
+  width: 100%;
+  min-width: 1180px;
+  height: 120px;
+  border-bottom: 1px solid #dddddd;
+  background-color: #fff;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+}
+
+/* 고정 */
+.header-inner {
+  width: 1180px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ========== 로고 ========== */
+.logo {
+  position: absolute;
+  left: 90px;
+  top: 30px;
+}
+.logo a {
+  font-size: 60px;
+  font-weight: 800;
+  color: #0b518f;
+}
+
+/* ========== 네비게이션 ========== */
+
+.main-nav {
+  position: absolute;
+  left: 250px;
+  top: 60px;
+}
+
+.main-nav > ul {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* 구분선 */
+.main-nav > ul > li:first-child {
+  position: relative;
+  padding-right: 20px;
+  margin-right: 20px;
+}
+
+/* 세로 구분선 짧게 조정 */
+.main-nav > ul > li:first-child::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%); /* 중앙 정렬 */
+  width: 1.5px;
+  height: 30px; /* 세로 길이 dk..*/
+  background-color: #bababa;
+  border-radius: 10px;
+}
+
+.main-nav > ul > li {
+  position: relative;
+  padding-bottom: 6px;
+}
+
+/* 기본 메뉴 스타일 (박스 영역 생성해서 마우스대면 클릭 가능) */
+.main-nav > ul > li > a {
+  display: block;
+  width: 140px;
+  height: 55px;
+  line-height: 60px;
+  text-align: center;
+
+  font-size: 19px;
+  font-weight: 400;
+  color: #000000;
+  transition: all 0.2s ease;
+
+}
+
+/* hover 시 */
+.main-nav > ul > li > a:hover {
+  color: #3d86c6;
+}
+
+/* ========== 드롭다운 (강좌 하위 메뉴) ========== */
+
+.main-nav li ul {
+  display: none;
+  position: fixed;
+  top: 120px;
+  left: 325px;
+  transform: translateX(-50%);
+
+  min-width: 170px;
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 3px;
+
+  padding: 0;
+  z-index: 2000;
+  transition: all 0.15s ease;
+
+  display: none;
+}
+
+/* hover 시 유지 */
+.main-nav li:hover > ul,
+.main-nav li ul:hover {
+  display: block;
+}
+
+/* 드롭다운 항목 */
+.main-nav li ul li a {
+  display: block;
+  padding: 15px 20px;
+  font-size: 16px;
+  font-weight: 400;
+  color: #111827;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.main-nav li ul li a:hover {
+  background-color: #70a8dd;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* 강좌 hover 시 드롭다운 열려도 tor 유지 */
+.main-nav > ul > li:hover > a {
+  background-color: #ffffff;
+  color: #3d86c6;
+}
+
+/* ========== 로그인 / 로그아웃 / 마이페이지 버튼 ========== */
+.auth-buttons {
+  position: absolute;
+  top: 60px;
+  right:80px;
+}
+
+.user-menu {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+
+}
+
+.user-menu a {
+  display: inline-block;
+  padding: 9px 20px;
+  font-size: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+/* 마이페이지 (파란색) */
+.user-menu a[href*="dashboard"] {
+  background-color: #3d86c6;
+  color: #fff;
+}
+.user-menu a[href*="dashboard"]:hover {
+  background-color: #2075bf;
+}
+
+/* 로그인 / 로그아웃 (회색) */
+.user-menu a[href*="loginForm"],
+.user-menu a[href*="logout"] {
+  background-color: #dbdbdb;
+  color: #111827;
+}
+.user-menu a[href*="loginForm"]:hover,
+.user-menu a[href*="logout"]:hover {
+  background-color: #d0d0d0;
+}

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수강생 내 강좌</title>
+    <link rel="stylesheet"  href="file:///C:/dw/project/smartedu/src/main/resources/static/css/student_class.css" th:href="@{/css/student_class.css}"/>
+</head>
+<body>
+<main class="mypage-container">
+  <!-- 사이드바 -->
+  <aside class="mypage-sidebar">
+    <nav class="sidebar-menu">
+      <h3>강좌  </h3>
+      <ul>
+        <li><a th:href="@{/mypage/mycourse}" class="active">내 강좌</a>
+        </li>
+        <li><a th:href=@{/question/list} class="active">질의 응답</a>
+        </li>
+      </ul>
+      
+      <h3>마이페이지</h3>
+      <ul>
+        <li><a href="#">찜 목록</a></li>
+        <li><a href="#">결제 내역</a></li>
+        <li><a th:href="@{/mypage/info}">내 정보</a></li>
+        <li><a th:href="@{/mypage/pwdcheck}">비밀번호 변경</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <section class="mypage-content mycourse">
+  <!-- 제목 + 구분선 + 카테고리 셀렉트 -->  
+  <header class="mc-header">
+    <h2 class="mc-title-lg">내 강좌</h2>
+    <div class="mc-divider" aria-hidden="true"></div>
+
+    <!-- 셀렉트바 (제목 아래로 이동) -->
+    <div class="mc-filterbar">
+      <div class="mc-select" data-open="false">
+        <button class="mc-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+          <span class="mc-select-value">전체</span>
+          <svg class="mc-caret" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <ul class="mc-select-menu" role="listbox" tabindex="-1">
+          <li role="option" data-value="전체" aria-selected="true">전체</li>
+          <li role="option" data-value="프론트엔드">프론트엔드</li>
+          <li role="option" data-value="백엔드">백엔드</li>
+          <li role="option" data-value="데이터베이스">데이터베이스</li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- 가로로 긴 박스형 리스트 (각 박스 클릭 = 상세) -->
+  <div class="mc-list">
+    <a href="file:///C:/dw/project/smartedu/src/main/resources/templates/student_class_detail.html" class="mc-rowcard" aria-label="HTML/CSS 웹입문 상세보기">
+      <div class="mc-row-left">
+        <h3 class="row-title">HTML/CSS 웹입문</h3>
+        <div class="row-meta">
+          <span class="meta-val">프론트엔드</span>
+          <span class="dot">|</span>
+          <span class="meta-label"></span><span class="meta-val">김코딩</span>
+        </div>
+      </div>
+      <div class="mc-row-right">
+        <span class="remain">73일 남음</span>
+      </div>
+    </a>
+
+    <a href="#" class="mc-rowcard" aria-label="JavaScript 기초 상세보기">
+      <div class="mc-row-left">
+        <h3 class="row-title">JavaScript 기초</h3>
+        <div class="row-meta">
+          </span><span class="meta-val">프론트엔드</span>
+          <span class="dot">|</span>
+          <span class="meta-val">이개발</span>
+        </div>
+      </div>
+      <div class="mc-row-right">
+        <span class="remain">90일 남음</span>
+      </div>
+    </a>
+
+    <a href="#" class="mc-rowcard" aria-label="데이터베이스 기본 상세보기">
+      <div class="mc-row-left">
+        <h3 class="row-title">데이터베이스 기본</h3>
+        <div class="row-meta">
+          <span class="meta-val">데이터베이스</span>
+          <span class="dot">|</span>
+          <span class="meta-val">박데이터</span>
+        </div>
+      </div>
+      <div class="mc-row-right">
+        <span class="remain is-expired">만료</span>
+      </div>
+    </a>
+  </div>
+  <div class="pagination">
+    <button disabled>&lt;</button>
+    <button class="active">1</button>
+    <button>2</button>
+    <button>3</button>
+    <button>4</button>
+    <button>&gt;</button>
+</div>
+</section>
+</main>
+
+<script src="file:///C:/dw/project/smartedu/src/main/resources/static/js/selectbar.js" th:href="@{/js/selectbar.js}"></script>
+
+</body>
+</html>

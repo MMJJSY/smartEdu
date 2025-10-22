@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title th:text="'강사 상세보기 - ' + ${instructor.name}">강사 상세보기</title>
+  <link rel="stylesheet" th:href="@{/css/admin_dashboard.css}">
+  <link rel="stylesheet" th:href="@{/css/instructor_detail.css}">
+
+  <script>
+    // 승인 / 거절 시 확인창 + 부모 새로고침 + 현재창 닫기
+    function confirmAction(status) {
+      const message = status === 'APPROVED' ? '정말 승인하시겠습니까?' : '정말 거절하시겠습니까?';
+      if (confirm(message)) {
+        const form = document.getElementById('statusForm');
+        const inputStatus = document.getElementById('statusInput');
+        inputStatus.value = status;
+
+        // 폼 전송 후 성공하면 팝업 닫고 부모 새로고침
+        fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form)
+        })
+          .then(response => {
+            if (response.ok) {
+              alert('처리가 완료되었습니다.');
+              if (window.opener) {
+                window.opener.location.reload();
+              }
+              window.close();
+            } else {
+              alert('처리 중 오류가 발생했습니다.');
+            }
+          })
+          .catch(() => alert('서버 연결 중 오류가 발생했습니다.'));
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div class="detail-header">
+    <h2 th:text="'강사 상세보기 - ' + ${instructor.name}"></h2>
+    <div class="action-buttons">
+      <form id="statusForm" th:action="@{/member/updateStatus}" method="post" style="display:inline;">
+        <input type="hidden" name="instructorId" th:value="${instructor.instructorId}">
+        <input type="hidden" name="status" id="statusInput">
+
+        <!-- 버튼 클릭 시 confirmAction 실행 -->
+        <button type="button" class="btn-approve" onclick="confirmAction('APPROVED')">승인</button>
+        <button type="button" class="btn-reject" onclick="confirmAction('REJECTED')">거절</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="detail-content">
+    <div class="info-row">
+      <div class="info-label">이름:</div>
+      <div th:text="${instructor.name}">홍길동</div>
+    </div>
+
+    <div class="info-row">
+      <div class="info-label">이메일:</div>
+      <div th:text="${instructor.email}">hong@test.com</div>
+    </div>
+
+    <div class="info-row">
+      <div class="info-label">전화번호:</div>
+      <div th:text="${instructor.phone}">010-0000-0000</div>
+    </div>
+
+    <div class="info-row">
+      <div class="info-label">현재 상태:</div>
+      <div th:switch="${instructor.pendingStatus?.name()}">
+        <span th:case="'PENDING'">대기</span>
+        <span th:case="'APPROVED'">승인됨</span>
+        <span th:case="'REJECTED'">거절됨</span>
+        <span th:case="*">-</span>
+      </div>
+    </div>
+
+    <div class="info-row">
+      <div class="info-label">이력서:</div>
+      <div>
+        <a th:href="@{'/upload/resume/' + ${instructor.resume}}" class="btn-download" download>이력서 다운로드</a>
+      </div>
+    </div>
+  </div>
+
+
+</body>
+
+</html>

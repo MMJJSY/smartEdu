@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${course.title} + ' 상세보기'">강좌 상세보기</title>
+
+  <!-- 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/class_detail.css}" />
+  <link rel="stylesheet" th:href="@{/css/courses.css}">
+
+  <!-- (선택) Spring Security CSRF 토큰: 보안 사용 중이면 자동 채워짐 -->
+  <meta name="_csrf" th:if="${_csrf != null}" th:content="${_csrf.token}" />
+</head>
+
+<body>
+  <th:block th:insert="~{modules/header.html}" />
+
+  <main class="course-detail">
+    <!-- 상단: 강좌 썸네일 + 정보 -->
+    <section class="course-top">
+      <div class="course-thumb manPicture" id="pictureView" th:data-id="${course.courseId}">
+        <img th:if="${course.img != null}" th:src="@{'/upload/course/' + ${course.img}}" alt="썸네일">
+      </div>
+
+      <div class="course-info">
+        <h2 class="course-title" th:text="${course.title}">HTML/CSS 웹입문</h2>
+        <p>강사 : <strong th:text="${course.instructorName}">김코딩</strong></p>
+        <p>총 회차 : <strong th:text="${#lists.size(lectureList)} + '강'">10강</strong></p>
+        <p class="course-desc">
+          강좌 소개 : <span th:text="${course.description}"></span>
+        </p>
+      </div>
+    </section>
+
+    <!-- 구매/찜 영역 -->
+    <section class="course-purchase">
+      <p class="price">
+        가격:
+        <span th:text="${#numbers.formatInteger(course.price, 3, 'COMMA')} + '원'">100,000원</span>
+      </p>
+
+      <!-- 로그인 상태일 때: 버튼만 두고 JS로 AJAX 호출 (페이지 이동 없음) -->
+      <button th:if="${loginUser != null}" type="button" class="wishlist-btn" id="wishlistBtn"
+        th:data-course-id="${course.courseId}">
+        ❤️ 찜하기
+      </button>
+
+      <!-- 비로그인 상태일 때: 로그인 페이지로 이동 -->
+      <button th:if="${loginUser == null}" id="loginRequiredBtn" class="wishlist-btn">
+        🔒 로그인 후 찜하기
+      </button>
+    </section>
+
+    <!-- 커리큘럼 -->
+    <section class="curriculum">
+      <h3>커리큘럼</h3>
+      <div class="curriculum-list">
+        <table>
+          <thead>
+            <tr>
+              <th>회차</th>
+              <th>강의명</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 강의가 있을 때 -->
+            <tr th:each="lecture : ${lectureList}">
+              <td th:text="${lecture.sectionNo} + '강'">1강</td>
+              <td th:text="${lecture.title}">HTML 기본 구조</td>
+            </tr>
+
+            <!-- 강의가 없을 때 -->
+            <tr th:if="${#lists.isEmpty(lectureList)}">
+              <td colspan="2">등록된 강의가 없습니다.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <th:block th:insert="~{modules/footer.html}" />
+  <th:block th:insert="~{modules/common_js.html}" />
+
+  <script th:inline="javascript">
+    (function () {
+      // ✅ 이 파일이 여러 번 포함되어도 중복 바인딩 방지
+      if (window.__wishlistHandlersBound) return;
+      window.__wishlistHandlersBound = true;
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // ── 비로그인 버튼 ─────────────────────────────────
+        const loginRequiredBtn = document.getElementById("loginRequiredBtn");
+        if (loginRequiredBtn && !loginRequiredBtn.__bound) {
+          loginRequiredBtn.__bound = true;
+          loginRequiredBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const currentUrl = window.location.href;
+            window.location.href = /*[[${'/common/loginForm'}]]*/ '/common/loginForm'
+              + '?retUrl=' + encodeURIComponent(currentUrl);
+          }, { passive: false });
+        }
+
+        // ── 위시리스트(찜) 버튼 ────────────────────────────
+        const wishBtn = document.getElementById("wishlistBtn");
+        if (wishBtn && !wishBtn.__bound) {
+          wishBtn.__bound = true;
+
+          wishBtn.addEventListener("click", async function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // ✅ 연타/중복 실행 방지
+            if (wishBtn.dataset.busy === "1") return;
+            wishBtn.dataset.busy = "1";
+
+            const courseId = wishBtn.getAttribute("data-course-id");
+
+            // CSRF(사용 중일 때만)
+            const csrfMeta = document.querySelector('meta[name="_csrf"]');
+            const headers = { "Content-Type": "application/x-www-form-urlencoded" };
+            if (csrfMeta && csrfMeta.content) {
+              headers["X-CSRF-TOKEN"] = csrfMeta.content;
+            }
+
+            try {
+              const res = await fetch("/cart/add-ajax", {
+                method: "POST",
+                headers,
+                body: new URLSearchParams({ courseId, courseAmount: "0" })
+              });
+              const data = await res.json();
+
+              // 비로그인만 이동
+              if (!data.ok && data.needLogin && data.loginUrl) {
+                window.location.href = data.loginUrl;
+                return;
+              }
+
+              // ✅ alert는 딱 1번만
+              alert(data.ok
+                ? (data.duplicated ? "이미 찜되어 있는 강좌입니다." : "찜 목록에 추가되었습니다.")
+                : "처리 중 오류가 발생했습니다."
+              );
+            } catch (err) {
+              console.error(err);
+              alert("네트워크 오류가 발생했습니다.");
+            } finally {
+              // 약간의 딜레이 후 해제(더블클릭 대비)
+              setTimeout(() => { wishBtn.dataset.busy = "0"; }, 200);
+            }
+          }, { passive: false });
+        }
+      });
+    })();
+  </script>
+</body>
+
+</html>

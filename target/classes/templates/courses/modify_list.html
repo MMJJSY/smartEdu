@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <base th:href="@{/}" />
+  <title>강좌 수정 요청 목록</title>
+  <link rel="stylesheet" th:href="@{/css/admin_dashboard.css}">
+  <link rel="stylesheet" th:href="@{/css/paging.css}">
+  <link rel="stylesheet" th:href="@{/css/modify_list.css}">
+</head>
+
+<body>
+  <main>
+    <h2>강좌 수정 요청 목록</h2>
+
+    <div class="filter-box">
+      <label>상태 필터:</label>
+      <select id="statusFilter" onchange="filterStatus()">
+        <option value="">전체</option>
+        <option value="PENDING" th:selected="${selectedFilter == 'PENDING'}">대기중</option>
+        <option value="ACTIVE" th:selected="${selectedFilter == 'ACTIVE'}">승인됨</option>
+        <option value="INACTIVE" th:selected="${selectedFilter == 'INACTIVE'}">반려됨</option>
+      </select>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>강좌명</th>
+          <th>강사명</th>
+          <th>카테고리</th>
+          <th>상태</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="course : ${courseList}"
+          th:onclick="|location.href='@{/courses/modify_detail(courseId=${course.courseId})}'|">
+          <td th:text="${course.title}">스프링 입문</td>
+          <td th:text="${course.instructorName}">홍길동</td>
+          <td th:text="${course.category}">백엔드</td>
+          <td th:text="${#dates.format(course.updatedAt, 'yyyy-MM-dd')}">2025-10-16</td>
+          <td th:switch="${course.modifyStatus?.name()}">
+            <span th:case="'PENDING'" class="status pending">대기</span>
+            <span th:case="'ACTIVE'" class="status active">승인</span>
+            <span th:case="'INACTIVE'" class="status inactive">반려</span>
+          </td>
+        </tr>
+
+        <tr th:if="${#lists.isEmpty(courseList)}">
+          <td colspan="5">수정 요청된 강좌가 없습니다.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="pagination">
+      <th:block th:insert="~{modules/paging.html}" />
+    </div>
+  </main>
+
+  <script>
+    function filterStatus() {
+      const selected = document.getElementById("statusFilter").value;
+      if (selected === "") {
+        window.location.href = "/courses/modify_list";
+      } else {
+        window.location.href = "/courses/modify_list?filter=" + selected;
+      }
+    }
+  </script>
+</body>
+
+</html>

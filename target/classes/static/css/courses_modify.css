@@ -1,0 +1,201 @@
+
+/* ===== Base ===== */
+:root{
+  --bg:#f7f8fa;
+  --card:#ffffff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --primary:#2563eb;
+  --primary-hover:#1d4ed8;
+  --danger:#ef4444;
+  --danger-hover:#dc2626;
+  --border:#e5e7eb;
+  --ring:#93c5fd;
+  --shadow:0 8px 20px rgba(0,0,0,.06);
+  --radius:14px;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,Pretendard,system-ui,Segoe UI,Apple SD Gothic Neo,Malgun Gothic,sans-serif}
+
+/* ===== Wrapper ===== */
+.course-request{
+  max-width: 980px;
+  margin: 40px auto 72px;
+  padding: 28px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.course-request h2{
+  margin:0 0 22px;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing:-.2px;
+}
+
+/* ===== Form Controls ===== */
+label{
+  display:block;
+  margin:16px 0 8px;
+  font-weight: 600;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="file"],
+select,
+textarea{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:15px;
+  background:#fff;
+  outline:none;
+  transition: border .15s, box-shadow .15s;
+}
+
+input[type="file"]{
+  padding:10px 12px;
+}
+
+textarea{min-height:110px; resize: vertical;}
+
+input:focus, select:focus, textarea:focus{
+  border-color: var(--ring);
+  box-shadow: 0 0 0 4px rgba(147,197,253,.35);
+}
+
+/* hint text (small) */
+small{color:var(--muted)}
+
+/* ===== 2-column rows ===== */
+.info-row{
+  display:grid;
+  grid-template-columns: 1fr 320px;
+  gap: 18px;
+  align-items: end;
+}
+
+@media (max-width: 860px){
+  .info-row{grid-template-columns: 1fr}
+}
+
+/* ===== Section divider ===== */
+hr{
+  border:0;
+  height:1px;
+  background:var(--border);
+  margin:24px 0;
+}
+
+/* ===== Lecture Section ===== */
+.lecture-section h3{
+  margin: 8px 0 14px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* Table */
+#lectureTable{
+  width:100%;
+  border-collapse: collapse;
+  overflow:hidden;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius: 12px;
+}
+
+#lectureTable thead th{
+  text-align:left;
+  font-size:14px;
+  font-weight:700;
+  color:#374151;
+  background:#f3f4f6;
+  padding:12px 14px;
+  border-bottom:1px solid var(--border);
+}
+
+#lectureTable tbody td{
+  padding:12px 14px;
+  border-top:1px solid var(--border);
+  vertical-align: middle;
+}
+
+#lectureTable input[type="text"]{
+  padding:10px 12px;
+}
+
+#lectureTable input[type="file"]{
+  background:#fafafa;
+}
+
+/* ===== Buttons ===== */
+.btn-add,
+.btn-delete,
+.btn-submit{
+  appearance:none;
+  border:none;
+  border-radius:12px;
+  padding:10px 14px;
+  font-weight:700;
+  cursor:pointer;
+  transition: transform .05s ease, box-shadow .2s ease, background .2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+
+.btn-add{
+  margin-top:12px;
+  background:#10b981;
+  color:#fff;
+}
+.btn-add:hover{background:#059669}
+
+.btn-delete{
+  background: var(--danger);
+  color:#fff;
+}
+.btn-delete:hover{background: var(--danger-hover)}
+
+.btn-submit{
+  background: var(--primary);
+  color:#fff;
+  padding:12px 18px;
+  font-size:16px;
+}
+.btn-submit:hover{background: var(--primary-hover)}
+.btn-add:active, .btn-delete:active, .btn-submit:active{transform: translateY(1px)}
+
+/* ===== Submit box ===== */
+.submit-box{
+  margin-top: 22px;
+  display:flex;
+  justify-content:flex-end;
+}
+
+/* ===== Current file row (link) ===== */
+#lectureTable a{
+  color: var(--primary);
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(37,99,235,.35);
+}
+#lectureTable a:hover{
+  color: var(--primary-hover);
+  border-bottom-color: rgba(29,78,216,.6);
+}
+
+/* ===== Image thumb ===== */
+.course-request img{
+  border-radius:10px;
+  border:1px solid var(--border);
+}
+
+/* ===== Deleted row effect (optional, if you want to ghost rows before remove) ===== */
+tr.removing{
+  opacity:.5;
+  background: #fff1f2;
+  transition: opacity .2s ease, background .2s ease;
+}

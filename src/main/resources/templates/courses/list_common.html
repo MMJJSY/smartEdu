@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${pageTitle}">공통 목록</title>
+  <link rel="stylesheet" th:href="@{/css/admin_dashboard.css}">
+  <link rel="stylesheet" th:href="@{/css/paging.css}">
+</head>
+
+<body>
+  <main class="admin-dashboard">
+    <h2 th:text="${pageTitle}">공통 리스트</h2>
+
+    <!-- ✅ 필터 영역 -->
+    <div class="filter-box">
+      <form th:action="@{${pageUrl}}" method="get" style="margin:0;">
+        <input type="hidden" name="role" th:value="${role}">
+        <input type="hidden" name="filterType" th:value="${filterType}">
+
+        <label>상태 필터:</label>
+        <select name="filter" onchange="this.form.submit()">
+          <option value="">전체</option>
+          <option th:each="opt : ${filterOptions}" th:value="${opt.value}" th:text="${opt.label}"
+            th:selected="${selectedFilter == opt.value}">
+          </option>
+        </select>
+      </form>
+
+      <!-- 오른쪽: 강사 전용 버튼 -->
+      <th:block th:if="${role == 'INSTRUCTOR'}">
+        <button type="button" class="btn-create" th:onclick="|location.href='@{/courses/registForm}'|">+ 새 강좌
+          요청</button>
+      </th:block>
+    </div>
+
+    <!-- ✅ 리스트 테이블 -->
+    <table class="approval-table">
+      <thead>
+        <!-- ✅ 강사 내강좌: 5개 컬럼 고정 -->
+        <tr th:if="${role == 'INSTRUCTOR' and filterType == 'instructor'}">
+          <th>강좌명</th>
+          <th>강사명</th>
+          <th>카테고리</th>
+          <th>승인상태</th>
+          <th>개강상태</th>
+        </tr>
+
+        <!-- 기존: 다른 화면 -->
+        <tr th:unless="${role == 'INSTRUCTOR' and filterType == 'instructor'}">
+          <th>강좌명</th>
+          <th>강사명</th>
+          <th>카테고리</th>
+          <th th:if="${role != 'STUDENT'}"
+            th:text="${filterType == 'approved' ? '승인 상태' : (filterType == 'modify' ? '수정 상태' : '상태')}">
+            상태
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <!-- ✅ 강사 내강좌 행 -->
+        <tr th:each="course : ${courseList}"
+          th:if="${courseList != null and role == 'INSTRUCTOR' and filterType == 'instructor'}"
+          th:onclick="|location.href='@{${detailUrl}(courseId=${course.courseId}, role=${role}, filterType=${filterType})}'|"
+          style="cursor:pointer;">
+          <td th:text="${course.title}">스프링 입문</td>
+          <td th:text="${course.instructorName}">홍길동</td>
+          <td th:text="${course.category}">백엔드</td>
+          <!-- 승인상태 -->
+          <td>
+            <span th:switch="${course.approvedStatus?.name()}">
+              <span th:case="'PENDING'" class="status pending">대기</span>
+              <span th:case="'POSITIVE'" class="status active">승인</span>
+              <span th:case="'NEGATIVE'" class="status inactive">반려</span>
+              <span th:case="*">-</span>
+            </span>
+          </td>
+          <!-- 개강상태 -->
+          <td>
+            <span th:switch="${course.status?.name()}">
+              <span th:case="'PENDING'" class="status pending">대기</span>
+              <span th:case="'OPEN'" class="status active">개강</span>
+              <span th:case="'CLOSE'" class="status inactive">종강</span>
+              <span th:case="*">-</span>
+            </span>
+          </td>
+        </tr>
+
+        <!-- 기존: 다른 화면 행 -->
+        <tr th:each="course : ${courseList}"
+          th:if="${courseList != null and not (role == 'INSTRUCTOR' and filterType == 'instructor')}"
+          th:onclick="|location.href='@{${detailUrl}(courseId=${course.courseId}, role=${role}, filterType=${filterType})}'|"
+          style="cursor:pointer;">
+          <td th:text="${course.title}">스프링 입문</td>
+          <td th:text="${course.instructorName}">홍길동</td>
+          <td th:text="${course.category}">백엔드</td>
+          <td th:if="${role != 'STUDENT'}">
+            <!-- approved -->
+            <th:block th:if="${filterType == 'approved'}">
+              <span th:switch="${course.approvedStatus?.name()}">
+                <span th:case="'PENDING'" class="status pending">대기</span>
+                <span th:case="'POSITIVE'" class="status active">승인</span>
+                <span th:case="'NEGATIVE'" class="status inactive">반려</span>
+                <span th:case="*">-</span>
+              </span>
+            </th:block>
+            <!-- ✅ 수정 요청: 관리자/강사 공통(학생만 제외) -->
+            <th:block th:if="${filterType == 'modify' and role != 'STUDENT'}">
+              <span th:switch="${course.modifyStatus?.name()}">
+                <span th:case="'REQUEST'" class="status inactive">관리자 요청</span> <!-- ✅ 추가/유지 -->
+                <span th:case="'PENDING'" class="status pending">요청됨</span>
+                <span th:case="'ACTIVE'" class="status active">수정 완료</span>
+                <span th:case="'INACTIVE'" class="status inactive">반려</span>
+                <span th:case="*">-</span>
+              </span>
+            </th:block>
+            <!-- status -->
+            <th:block th:if="${filterType == 'status'}">
+              <span th:switch="${course.status?.name()}">
+                <span th:case="'PENDING'" class="status pending">대기</span>
+                <span th:case="'OPEN'" class="status active">개강</span>
+                <span th:case="'CLOSE'" class="status inactive">종강</span>
+                <span th:case="*">-</span>
+              </span>
+            </th:block>
+            <!-- instructor(기타 화면) -->
+            <th:block th:if="${filterType == 'instructor'}">
+              <span th:switch="${course.approvedStatus?.name()}">
+                <span th:case="'PENDING'" class="status pending">대기</span>
+                <span th:case="'POSITIVE'" class="status active">승인완료</span>
+                <span th:case="'NEGATIVE'" class="status inactive">반려</span>
+                <span th:case="*">-</span>
+              </span>
+            </th:block>
+          </td>
+        </tr>
+
+        <!-- 데이터 없음 -->
+        <tr th:if="${#lists.isEmpty(courseList)} and ${#lists.isEmpty(instructorList)}">
+          <td colspan="5">표시할 데이터가 없습니다.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ✅ 공용 페이지네이션 -->
+    <div class="pagination">
+      <th:block th:insert="~{modules/paging.html}" />
+    </div>
+  </main>
+</body>
+
+</html>

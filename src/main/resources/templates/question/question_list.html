@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>질의응답</title>
+  <link rel="stylesheet" th:href="@{/css/qna.css}">
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+
+<body>
+    <main class="qna-container">
+      <h2>질의응답</h2>
+
+      <div class="qna-top">
+        <button class="write-btn" th:onclick="|location.href='@{/question/registForm}'|">글쓰기</button>
+      </div>
+
+      <table class="qna-table">
+        <thead>
+          <tr>
+            <th>번호</th>
+            <th>강좌명</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>작성일</th>
+            <th>조회수</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:if="${#lists.isEmpty(questionList)}">
+            <td colspan="6" style="text-align:center;">등록된 질문이 없습니다.</td>
+          </tr>
+          <tr th:each="q, stat : ${questionList}"
+            th:onclick="|location.href='@{/question/detail(questionId=${q.questionId})}'|" style="cursor: pointer;">
+            <td th:text="${stat.count}"></td>
+            <td th:text="${q.courseName}"></td>
+            <td>
+              <span th:text="${q.title}"></span>
+              <span th:text="'[' + ${q.commentCount} + ']'"></span>
+            </td>
+            <td th:text="${q.memberName}"></td>
+            <td th:text="${#temporals.format(q.createdAt, 'yyyy-MM-dd')}"></td>
+            <td th:text="${q.viewCount}"></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </main>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>수강생 후기</title>
+  <link rel="stylesheet" th:href="@{css/dashboard.css}">
+  <link rel="stylesheet" th:href="@{/css/student-review.css}">
+  <link rel="stylesheet" th:href="@{css/header.css}">
+  <link rel="stylesheet" th:href="@{css/footer.css}">
+  <script th:src="@{/js/student-review.js}" defer></script>
+</head>
+
+<body>
+
+  <th:block th:insert="~{modules/header}" />
+  <input type="hidden" id="currentUserId" th:value="${session.loginUser != null ? session.loginUser.memberId : ''}">
+
+  <div class="page-wrapper">
+
+    <main class="review-container">
+      <h2>수강생 후기</h2>
+
+      <p class="warning">
+        ⚠ 광고성, 음란성, 타 비방용 및 게시판 성격과 맞지 않는 글은
+        <strong>관리자가 임의로 삭제 조치</strong>합니다.
+      </p>
+
+      <!-- 후기 작성 -->
+      <section class="review-write" th:if="${currentUserId != null}">
+        <div class="custom-selects small">
+          <!-- 강좌 선택 -->
+          <div class="select-box" id="writeLectureSelect">
+            <button type="button" class="select-btn" data-selected="">내 강좌 선택</button>
+            <ul class="options">
+              <li th:each="course : ${myCourses}" th:data-id="${course.courseId}" th:data-value="${course.title}"
+                th:text="${course.title}"></li>
+            </ul>
+          </div>
+
+          <!-- 별점 선택 -->
+          <div class="rating-box">
+            <span class="rating-label">별점</span>
+            <div class="stars">
+              <span class="star" data-value="1">★</span>
+              <span class="star" data-value="2">★</span>
+              <span class="star" data-value="3">★</span>
+              <span class="star" data-value="4">★</span>
+              <span class="star" data-value="5">★</span>
+            </div>
+          </div>
+        </div>
+
+        <textarea id="reviewText" placeholder="후기를 작성해주세요."></textarea>
+
+        <input type="hidden" id="currentUserId" th:value="${currentUserId}">
+        <div class="form-bottom">
+          <button id="submitBtn">등록</button>
+        </div>
+      </section>
+
+      <!-- 비회원 안내 문구 -->
+      <section th:if="${currentUserId == null}">
+        <p style="color: gray; text-align: center; margin-top: 20px;">
+          로그인 후 후기를 작성할 수 있습니다.
+        </p>
+      </section>
+
+      <hr class="divider">
+
+      <!-- 후기 보기 -->
+      <section class="review-view">
+        <div class="custom-selects">
+          <div class="select-box" id="categorySelect">
+            <button type="button" class="select-btn" th:data-selected="${selectedCategory}"
+              th:text="${selectedCategory}">전체</button>
+            <ul class="options">
+              <li data-value="전체">전체</li>
+              <li data-value="백엔드">백엔드</li>
+              <li data-value="프론트엔드">프론트엔드</li>
+              <li data-value="데이터베이스">데이터베이스</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 후기 목록 -->
+        <ul class="review-list" id="reviewList">
+          <li th:each="review : ${reviewList}" class="review-item">
+            <div class="review-header">
+              <strong th:text="${review.studentName}">홍길동</strong> |
+              <span th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd')}"></span><br>
+              <span th:text="${review.category}"></span> |
+              <span th:text="${review.courseTitle}"></span>
+            </div>
+
+            <div class="review-rating">
+              <span th:each="i : ${#numbers.sequence(1, 5)}" th:text="${i <= review.rating ? '★' : '☆'}"
+                style="color: #fbbf24; font-size: 16px;"></span>
+            </div>
+
+            <div class="review-content" th:text="${review.content}"></div>
+
+            <button th:if="${review.studentId == currentUserId or currentUserRole?.name() == 'ADMIN'}"
+              class="delete-btn" th:data-id="${review.reviewId}">
+              삭제
+            </button>
+          </li>
+        </ul>
+      </section>
+    </main>
+  </div>
+  <th:block th:insert="~{modules/footer}"/>
+</body>
+
+</html>

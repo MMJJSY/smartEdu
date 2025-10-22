@@ -1,0 +1,187 @@
+<div class="sidebar-inner">
+
+  <!-- ============================== -->
+  <!-- ✅ 관리자 (ADMIN) 메뉴 -->
+  <!-- ============================== -->
+  <div th:if="${role == 'ADMIN'}">
+    <ul class="main-menu">
+      <!-- 강좌 -->
+      <li class="menu-item">
+        <span class="menu-title">강좌</span>
+        <ul class="submenu">
+          <li>
+            <a href="#" onclick="loadContent('/courses/list_common?role=ADMIN&filterType=approved')">
+              강좌 요청 목록
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="loadContent('/courses/list_common?role=ADMIN&filterType=modify')">
+              수정 요청 목록
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="loadContent('/courses/list_common?role=ADMIN&filterType=status')">
+              강좌 목록
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- 강사 관리 -->
+      <li class="menu-item">
+        <span class="menu-title">강사</span>
+        <ul class="submenu">
+          <li>
+            <a href="#" onclick="loadContent('/member/dashboard/instructor_status')">
+              강사 승인 상태
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- 통계 (준비중) -->
+      <li class="menu-item">
+        <span class="menu-title">통계</span>
+        <ul class="submenu empty">
+          <li><span class="disabled">(준비중)</span></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ============================== -->
+  <!-- ✅ 강사 (INSTRUCTOR) 메뉴 -->
+  <!-- ============================== -->
+  <div th:if="${role == 'INSTRUCTOR'}">
+    <ul class="main-menu">
+      <!-- 강좌 -->
+      <li class="menu-item">
+        <span class="menu-title">강좌</span>
+        <ul class="submenu">
+          <li>
+            <a href="#" onclick="loadContent('/courses/list_common?role=INSTRUCTOR&filterType=instructor')">
+              내 강좌
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="loadContent('/courses/list_common?role=INSTRUCTOR&filterType=modify')">
+              강좌 수정 요청
+            </a>
+          </li>
+          <li>
+            <a href="#" class="menu-link" th:attr="data-route=@{/question/list}">
+              질의응답
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- 마이페이지 -->
+      <li class="menu-item">
+        <span class="menu-title">마이페이지</span>
+        <ul class="submenu">
+          <li><a href="#" onclick="loadContent('/mypage/info')">내 정보</a></li>
+          <li><a href="#" onclick="loadContent('/mypage/pwdcheck')">비밀번호 변경</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ============================== -->
+  <!-- ✅ 수강생 (STUDENT) 메뉴 -->
+  <!-- ============================== -->
+  <div th:if="${role == 'STUDENT'}">
+    <ul class="main-menu">
+      <!-- 강좌 -->
+      <li class="menu-item">
+        <span class="menu-title">강좌</span>
+        <ul class="submenu">
+          <li>
+            <!-- ✅ 학생용 “내 강좌”로 수정 -->
+            <a href="#" onclick="loadContent('/courses/list_common?role=STUDENT&filterType=status')">
+              내 강좌
+            </a>
+          </li>
+          <li><a href="#" class="menu-link" th:attr="data-route=@{/question/list}">
+              질의응답
+            </a></li>
+        </ul>
+      </li>
+
+      <!-- 마이페이지 -->
+      <li class="menu-item">
+        <span class="menu-title">마이페이지</span>
+        <ul class="submenu">
+          <li><a href="#" onclick="loadContent('/mypage/favorites')">찜 목록</a></li>
+          <li><a href="#" onclick="loadContent('/mypage/payments')">결제 내역</a></li>
+          <li><a href="#" onclick="loadContent('/mypage/info')">내 정보</a></li>
+          <li><a href="#" onclick="loadContent('/mypage/pwdcheck')">비밀번호 변경</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+  (function () {
+    const links = Array.from(document.querySelectorAll('.sidebar-inner .submenu a'));
+
+    // onclick → data-route 추출
+    links.forEach(a => {
+      const oc = a.getAttribute('onclick');
+      if (oc) {
+        const m = oc.match(/loadContent\('([^']+)'\)/);
+        if (m && m[1]) a.dataset.route = m[1];
+        a.removeAttribute('onclick');
+      }
+    });
+
+    // 초기화: 남아 있을 수 있는 클래스 제거
+    links.forEach(a => a.classList.remove('active', 'loading'));
+
+    function setActive(target) {
+      links.forEach(el => el.classList.remove('active'));
+      target.classList.add('active');
+    }
+
+    function setLoading(a, on) {
+      if (!a) return;
+      a.classList.toggle('loading', !!on);
+      a.setAttribute('aria-busy', on ? 'true' : 'false');
+      a.setAttribute('aria-disabled', on ? 'true' : 'false');
+    }
+
+    links.forEach(a => {
+      a.addEventListener('click', (e) => {
+        const url = a.dataset.route;
+        const fullnav = a.dataset.fullnav === 'true';
+
+        if (url && !fullnav && typeof loadContent === 'function') {
+          e.preventDefault();
+          e.stopPropagation();
+
+          setLoading(a, true);
+          setActive(a);
+
+          let done = false;
+          const clear = () => { if (done) return; done = true; setLoading(a, false); };
+
+          try {
+            const ret = loadContent(url);
+            if (ret && typeof ret.then === 'function') {
+              ret.finally(clear);
+            } else {
+              const once = () => { document.removeEventListener('content:loaded', once); clear(); };
+              document.addEventListener('content:loaded', once, { once: true });
+              setTimeout(clear, 10000);
+            }
+          } catch (err) {
+            console.error(err);
+            clear();
+          }
+        }
+      }, { passive: false });
+    });
+  })();
+</script>

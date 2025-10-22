@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>비밀번호 변경</title>
+    <link rel="stylesheet" th:href="@{/css/student_pwdedit.css}">
+
+</head>
+
+
+<body>
+    <main class="mypage-container">
+        <main class="pwdedit-container">
+            <header class="pwdedit-header">
+                <h1>비밀번호 변경</h1>
+            </header>
+
+            <section class="pwdedit-section">
+                <form th:action="@{/mypage/pwdedit}" method="post" id="pwdEditForm" class="pwdedit-form">
+                    <div class="form-row">
+                        <label for="newPwd">새 비밀번호</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="newPwd" name="newPwd" placeholder="새 비밀번호를 입력하세요" required>
+                            <small class="hint" id="pwInfo">영문, 숫자, 특수문자 포함 8자 이상 입력해야 합니다.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="confirmPwd">새 비밀번호 확인</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="confirmPwd" name="confirmPwd" placeholder="비밀번호를 다시 입력하세요"
+                                required>
+                            <small id="pwMsg"></small>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="submit-btn">변경</button>
+                    </div>
+                </form>
+            </section>
+        </main>
+
+        <!-- alert 메시지 -->
+        <script th:if="${msg}">
+            alert('[[${msg}]]');
+        </script>
+
+        <script th:src="@{/js/pwdedit.js}"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Review-Mapper">
+
+<!-- 후기 등록 -->
+<insert id="insertReview" parameterType="review" useGeneratedKeys="true" keyProperty="reviewId">
+  insert into reviews (course_id, student_id, rating, content)
+  values (#{courseId}, #{studentId}, #{rating}, #{content})
+</insert>
+
+<!-- 후기 조회 -->
+ <select id="selectReviewById" parameterType="int" resultType="review">
+  select review_id, course_id, student_id, 
+  rating, content, created_at, updated_at
+  from reviews
+  where review_id = #{reviewId}
+ </select>
+
+<!-- 후기 목록 -->
+ <select id="selectReviewList" parameterType="string" resultType="review">
+  select r.review_id, r.course_id, r.student_id,
+  r.rating, r.content, r.created_at, r.updated_at,
+  c.title AS course_title,
+  c.category AS category,
+  m.name AS student_name
+  from reviews r join courses c ON r.course_id = c.course_id
+  join members m ON r.student_id = m.member_id
+  <where>
+    <if test="category != null and category != '전체'">
+      <if test="category == '백엔드'">
+       c.category = 'BACKEND'
+      </if>
+      <if test="category == '프론트엔드'">
+       c.category = 'FRONTEND'
+      </if>
+      <if test="category == '데이터베이스'">
+       c.category = 'DATABASE'
+      </if>
+    </if>
+  </where>
+  order by r.created_at desc
+</select>
+
+<select id="selectReviewByStudentAndCourse" parameterType="map" resultType="review"> 
+  select * from
+  reviews 
+  where student_id = #{studentId} 
+    and course_id = #{courseId} 
+  </select>
+
+  <!-- 후기 수정 -->
+  <update id="updateReview" parameterType="review">
+    update reviews
+    set rating = #{rating},
+        content = #{content}
+    where review_id = #{reviewId}
+  </update>
+
+  <!-- 후기 삭제 -->
+  <delete id="deleteReview" parameterType="int">
+    delete 
+    from reviews 
+    where review_id = #{reviewId}
+  </delete>
+
+
+</mapper>

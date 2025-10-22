@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>강좌 승인 요청 목록</title>
+  <link rel="stylesheet" th:href="@{/css/admin_dashboard.css}">
+  <link rel="stylesheet" th:href="@{/css/paging.css}">
+</head>
+
+<body>
+  <main class="admin-dashboard">
+    <h2>강좌 승인 요청 목록
+      <form th:action="@{/courses/status_list}" method="get" style="margin:0;">
+        <select name="filter" onchange="this.form.submit()">
+          <option value="">전체</option>
+          <option value="PENDING" th:selected="${param.filter == 'PENDING'}">대기</option>
+          <option value="POSITIVE" th:selected="${param.filter == 'POSITIVE'}">승인완료</option>
+          <option value="NEGATIVE" th:selected="${param.filter == 'NEGATIVE'}">반려</option>
+        </select>
+      </form>
+    </h2>
+
+    <table class="approval-table">
+      <thead>
+        <tr>
+          <th>번호</th>
+          <th>강좌명</th>
+          <th>강사명</th>
+          <th>카테고리</th>
+          <th>승인 상태</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="course, stat : ${courseList}"
+          th:onclick="|location.href='@{/courses/status_detail(courseId=${course.courseId})}'|" style="cursor:pointer;">
+          <td th:text="${stat.count}"></td>
+          <td th:text="${course.title}"></td>
+          <td th:text="${course.instructorName}"></td>
+          <td th:text="${course.category}"></td>
+          <td th:switch="${course.approvedStatus?.name()}">
+            <span th:case="'PENDING'" class="status-pending">대기</span>
+            <span th:case="'POSITIVE'" class="status-positive">승인완료</span>
+            <span th:case="'NEGATIVE'" class="status-negative">반려</span>
+            <span th:case="*">-</span> <!-- 예외 처리용 -->
+          </td>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(courseList)}">
+          <td colspan="6">승인 대기중인 강좌가 없습니다.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 페이지네이션 -->
+    <div class="pagination">
+      <th:block th:insert="~{modules/paging.html}" />
+    </div>
+  </main>
+</body>
+
+</html>

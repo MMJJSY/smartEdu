@@ -1,0 +1,134 @@
+/* =========================
+   기본 리셋 & 공통
+   ========================= */
+:root {
+  /* 고정 헤더 높이: 헤더 CSS와 동일하게 맞추세요 */
+  --header-h: 120px;
+  --footer-h: 200px;
+
+  /* 사이드바 컬러 토큰 */
+  --sb-bg: #eef6ff;
+  --sb-border: #dbe4f0;
+  --sb-title: #0b518f;
+  --sb-link: #0f172a;
+  --sb-muted: #667085;
+  --sb-hover-bg: #70a8dd;
+  --sb-hover-tx: #ffffff;
+  --sb-sep: #e7eef7;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Noto Sans KR", "맑은 고딕", sans-serif;
+  height: auto;
+  /* 고정 높이 제거 */
+  overflow-y: auto;
+  /* 페이지 전체 스크롤 */
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* =========================
+   대시보드 레이아웃
+   ========================= */
+/* 대시보드 그리드 */
+/* 대시보드 레이아웃 */
+.dashboard-container {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  column-gap: 0;
+  margin-top: var(--header-h);
+  height: calc(100vh - var(--header-h) - var(--footer-h));
+  /* ← height로 고정 */
+}
+
+
+
+
+/* 메인 콘텐츠(iframe 래핑 영역은 필요 없고 iframe만 조정) */
+/* iframe도 동일 계산식 */
+#dashboardFrame {
+  width: 100%;
+  height: calc(100vh - var(--header-h) - var(--footer-h));
+  border: 0;
+  display: block;
+  /* baseline 간격 제거 */
+}
+
+/* =========================
+   테이블/공통 요소 (기존 스타일 정리)
+   ========================= */
+.dashboard-section {
+  margin: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border-bottom: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.pending {
+  color: #e11d48;
+  font-weight: 700;
+}
+
+/* =========================
+   다크 모드(선택)
+   ========================= */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sb-bg: #0e1624;
+    --sb-border: #1c2740;
+    --sb-title: #7cb6ff;
+    --sb-link: #e8eef8;
+    --sb-muted: #9fb0c6;
+    --sb-hover-bg: #2b66c9;
+    --sb-hover-tx: #ffffff;
+    --sb-sep: #1a2438;
+  }
+}
+
+/* =========================
+   반응형(옵션)
+   ========================= */
+@media (max-width: 1280px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .menu-title {
+    font-size: 14px;
+    margin: 16px 6px 8px;
+  }
+
+  .submenu a {
+    font-size: 13px;
+    padding: 9px 10px;
+  }
+}

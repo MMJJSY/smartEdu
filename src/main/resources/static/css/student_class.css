@@ -1,0 +1,210 @@
+/* =======================================================
+   MyCourse (Student) — Blue Themed
+   markup: .mypage-content.mycourse / .mc-*
+   ======================================================= */
+
+/* ---- 색 / 토큰 ---- */
+:root{
+  --brand-50:#eef4ff;
+  --brand-100:#e6edff;
+  --brand-200:#cfe0ff;
+  --brand-300:#9fbafc;
+  --brand-400:#6f91f2;
+  --brand-500:#2d6cdf;   /* point */
+  --brand-600:#2157c7;
+  --ink-900:#0f172a;
+  --ink-700:#334155;
+  --ink-500:#64748b;
+  --line:#e6eaf2;
+  --card:#ffffff;
+  --bg:#f7f9fc;
+  --success:#16a34a;
+  --danger:#ef4444;
+}
+
+/* ---- 레이아웃 ---- */
+body{ background: var(--bg); }
+.mypage-content.mycourse{
+  max-width: 960px;
+  margin: 28px auto 64px;
+  padding: 0 20px;
+}
+
+/* ---- 헤더 ---- */
+.mc-header .mc-title-lg{
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--ink-900);
+  letter-spacing:.01em;
+  margin: 4px 0 8px;
+}
+
+.mc-divider{
+  height: 3px;
+  width: 64px;
+  background: linear-gradient(90deg,var(--brand-500),var(--brand-300));
+  border-radius: 999px;
+  margin: 6px 0 18px;
+}
+
+/* ---- 필터바 ---- */
+.mc-filterbar{
+  display:flex;
+  justify-content:flex-start;
+  gap:10px;
+  margin-bottom:14px;
+}
+
+/* custom select */
+.mc-select{
+  position:relative;
+  width: 180px;
+  user-select:none;
+}
+.mc-select-trigger{
+  width:100%;
+  height:40px;
+  padding:0 12px;
+  display:flex; align-items:center; justify-content:space-between;
+  background: linear-gradient(180deg,var(--brand-50),var(--brand-100));
+  border:1px solid var(--brand-200);
+  border-radius:10px;
+  color: var(--ink-700);
+  font-weight:700;
+  cursor:pointer;
+  transition:.18s ease;
+}
+.mc-select-trigger:hover{
+  border-color: var(--brand-300);
+  box-shadow: 0 6px 16px rgba(45,108,223,.18);
+}
+.mc-caret{ flex:0 0 auto; }
+
+/* menu */
+.mc-select-menu{
+  position:absolute;
+  top:44px; left:0; right:0;
+  background: var(--card);
+  border:1px solid var(--brand-200);
+  border-radius:12px;
+  padding:6px;
+  margin:0;
+  list-style:none;
+  box-shadow:0 10px 28px rgba(16,24,40,.12);
+  display:none;
+  z-index: 20;
+}
+.mc-select[data-open="true"] .mc-select-menu{ display:block; }
+
+.mc-select-menu li{
+  padding:10px 10px;
+  border-radius:8px;
+  color:var(--ink-700);
+  cursor:pointer;
+  transition:.15s ease;
+}
+.mc-select-menu li[aria-selected="true"]{
+  background: linear-gradient(180deg,var(--brand-50),var(--brand-100));
+  color: var(--brand-700);
+  font-weight:800;
+}
+.mc-select-menu li:hover{
+  background: var(--brand-50);
+  color: var(--brand-700);
+}
+
+/* ---- 리스트 / 카드 ---- */
+.mc-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.mc-rowcard{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:space-between;
+  text-decoration:none;
+  background: var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:16px 18px;
+  box-shadow: 0 1px 0 rgba(16,24,40,.03);
+  transition: transform .12s ease, box-shadow .2s ease, border-color .18s ease, background .2s ease;
+  color: inherit;
+}
+.mc-rowcard:hover{
+  transform: translateY(-1px);
+  border-color: var(--brand-300);
+  background: linear-gradient(180deg,#fff, var(--brand-50));
+  box-shadow: 0 10px 26px rgba(45,108,223,.12);
+}
+
+/* 왼쪽: 타이틀/메타 */
+.mc-row-left{ display:flex; flex-direction:column; gap:6px; min-width:0; }
+.row-title{
+  font-size:17px; font-weight:800;
+  color: var(--ink-900);
+  margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.row-meta{ display:flex; align-items:center; gap:8px; color:var(--ink-500); font-size:13px; }
+.row-meta .dot{ opacity:.5; }
+
+/* 오른쪽: 남은일수 */
+.mc-row-right{ flex:0 0 auto; }
+.remain{
+  padding:8px 12px;
+  border-radius:999px;
+  font-weight:800;
+  font-size:12px;
+  color:#fff;
+  background: linear-gradient(180deg,var(--brand-500),var(--brand-600));
+  box-shadow: 0 6px 14px rgba(45,108,223,.22);
+}
+.remain.is-expired{
+  background: linear-gradient(180deg,#ef4444,#b91c1c);
+  box-shadow: 0 6px 14px rgba(239,68,68,.22);
+}
+
+/* 무제한 뱃지 색상 */
+.remain:empty,
+.remain:contains("무제한"){ background: linear-gradient(180deg,#16a34a,#15803d); }
+
+/* 데이터 없음 */
+.mc-empty{
+  background: var(--card);
+  border:1px dashed var(--brand-200);
+  border-radius:12px;
+  padding:24px 18px;
+  text-align:center;
+  color: var(--ink-500);
+  margin-top:6px;
+}
+.mc-link{
+  display:inline-block; margin-top:8px;
+  font-weight:800; color: var(--brand-600);
+  text-decoration:none;
+}
+.mc-link:hover{ text-decoration:underline; }
+
+/* ---- 반응형 ---- */
+@media (max-width: 640px){
+  .mc-select{ width: 100%; }
+  .mc-rowcard{ padding:14px; gap:10px; }
+  .row-title{ font-size:16px; }
+  .row-meta{ font-size:12px; }
+  .remain{ padding:7px 10px; font-size:11px; }
+}
+
+/* ---- 포커스 접근성 ---- */
+.mc-rowcard:focus-visible,
+.mc-select-trigger:focus-visible{
+  outline:none;
+  box-shadow: 0 0 0 3px rgba(45,108,223,.28);
+  border-color: var(--brand-500);
+}
+
+/* ---- 유틸(선택) : 텍스트 줄임 처리 보조 ---- */
+.mc-row-left .row-title,
+.mc-row-left .row-meta{ max-width: 72vw; }

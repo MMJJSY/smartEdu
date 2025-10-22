@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>강좌 수정 요청</title>
+  <link rel="stylesheet" th:href="@{/css/courses_modify.css}">
+</head>
+
+<body>
+  <main class="course-request">
+    <h2>강좌 수정 요청</h2>
+
+    <form th:action="@{/courses/modify}" method="post" enctype="multipart/form-data" id="modifyForm">
+      <input type="hidden" name="courseId" th:value="${course.courseId}">
+      <!-- 기존 이미지 유지용 -->
+      <input type="hidden" name="oldPicture" th:value="${course.img}">
+      <input type="hidden" id="deletedLectureIds" name="deletedLectureIds">
+
+      <!-- 강좌 기본정보 -->
+      <label>제목</label>
+      <input type="text" name="title" th:value="${course.title}" required>
+
+      <label>강좌 소개글</label>
+      <textarea name="description" rows="3" th:text="${course.description}" required></textarea>
+
+      <div class="info-row">
+        <div>
+          <label>카테고리</label>
+          <select name="category">
+            <option value="BACKEND" th:selected="${course.category == 'BACKEND'}">백엔드</option>
+            <option value="FRONTEND" th:selected="${course.category == 'FRONTEND'}">프론트엔드</option>
+            <option value="DATABASE" th:selected="${course.category == 'DATABASE'}">데이터베이스</option>
+          </select>
+        </div>
+        <div>
+          <label>가격 (원)</label>
+          <input type="number" name="price" min="0" th:value="${course.price}" required>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div>
+          <label>강사 이름</label>
+          <input type="text" name="instructorName" readonly th:value="${course.instructorName}">
+          <input type="hidden" name="instructorId" th:value="${course.instructorId}">
+        </div>
+        <div>
+          <label>썸네일 이미지 변경</label>
+          <input type="file" name="img" accept="image/*">
+          <div th:if="${course.img != null}" style="margin-top: 5px;">
+            <small>현재 이미지: </small>
+            <img th:src="@{'/upload/course/' + ${course.img}}" alt="썸네일 미리보기"
+              style="width:80px;height:50px;object-fit:cover;border:1px solid #ddd;border-radius:4px;">
+          </div>
+        </div>
+      </div>
+
+      <label>수정 요청 내용</label>
+      <textarea name="modifyComment" rows="3" placeholder="수정이 필요한 이유나 내용을 입력해주세요" required></textarea>
+
+      <hr>
+
+      <!-- 강의 수정 영역 -->
+      <section class="lecture-section">
+        <h3>강의 목록 수정</h3>
+        <table id="lectureTable">
+          <thead>
+            <tr>
+              <th>회차</th>
+              <th>강의명</th>
+              <th>영상 변경</th>
+              <th>삭제</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="lec, stat : ${lectureList}">
+              <td>
+                <span th:text="${lec.sectionNo} + '강'">1강</span>
+                <input type="hidden" th:name="'lecturesModify[' + ${stat.index} + '].lectureId'"
+                  th:value="${lec.lectureId}">
+                <input type="hidden" th:name="'lecturesModify[' + ${stat.index} + '].sectionNo'"
+                  th:value="${lec.sectionNo}">
+                <input type="hidden" th:name="'lecturesModify[' + ${stat.index} + '].oldVideo'" th:value="${lec.video}">
+              </td>
+              <td>
+                <input type="text" th:name="'lecturesModify[' + ${stat.index} + '].title'" th:value="${lec.title}"
+                  required>
+              </td>
+              <td>
+                <input type="file" th:name="'lecturesModify[' + ${stat.index} + '].video'" accept="video/mp4,video/*">
+
+                <!-- 현재 파일 표시 + 보기 링크 -->
+                <div th:if="${lec.video != null}" style="margin-top:6px;">
+                  <small>현재 파일: </small>
+                  <a th:href="@{/courses/getVideoPage(lectureId=${lec.lectureId})}" target="_blank" th:text="${
+             #strings.contains(lec.video,'$$') 
+               ? #strings.substring(lec.video, #strings.indexOf(lec.video,'$$') + 2) 
+               : lec.video
+           }">현재_파일명.mp4</a>
+                </div>
+
+                <!-- 영상 없음 표시 -->
+                <div th:if="${lec.video == null}" style="margin-top:6px;">
+                  <small>현재 파일: 없음</small>
+                </div>
+              </td>
+              <td><button type="button" class="btn-delete" onclick="deleteLecture(this)">삭제</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <button type="button" class="btn-add" onclick="addLecture()">+ 회차 추가하기</button>
+      </section>
+
+      <div class="submit-box">
+        <button type="submit" class="btn-submit">수정 요청 보내기</button>
+      </div>
+    </form>
+
+  </main>
+
+  <script>
+    function nextIdx() {
+      return document.querySelectorAll("#lectureTable tbody tr").length;
+    }
+
+    function addLecture() {
+      const tbody = document.querySelector("#lectureTable tbody");
+      const idx = nextIdx();
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+      <td>${idx + 1}강
+        <input type="hidden" name="lecturesModify[${idx}].sectionNo" value="${idx + 1}">
+        <input type="hidden" name="lecturesModify[${idx}].lectureId" value="0">
+        <input type="hidden" name="lecturesModify[${idx}].oldVideo" value="">
+      </td>
+      <td><input type="text" name="lecturesModify[${idx}].title" required></td>
+      <td><input type="file" name="lecturesModify[${idx}].video" accept="video/mp4,video/*"></td>
+      <td><button type="button" class="btn-delete" onclick="deleteLecture(this)">삭제</button></td>
+    `;
+      tbody.appendChild(tr);
+    }
+
+    function deleteLecture(btn) {
+      const tr = btn.closest("tr");
+      // 현재 행의 lectureId 추출
+      const idInput = tr.querySelector("input[name*='.lectureId']");
+      const lectureId = idInput ? parseInt(idInput.value || "0", 10) : 0;
+
+      // DB에 존재하는 행(lectureId > 0)만 삭제목록에 추가
+      if (lectureId > 0) {
+        const hidden = document.getElementById("deletedLectureIds");
+        const prev = hidden.value ? hidden.value.split(",").filter(v => v) : [];
+        if (!prev.includes(String(lectureId))) {
+          prev.push(String(lectureId));
+          hidden.value = prev.join(",");
+        }
+      }
+
+      // 화면에서 행 제거
+      tr.remove();
+
+      // 👉 인덱스 재정렬(이름들을 lecturesModify[0..n]으로 다시 맞춤)
+      const rows = document.querySelectorAll("#lectureTable tbody tr");
+      rows.forEach((row, i) => {
+        row.querySelectorAll("[name^='lecturesModify[']").forEach(input => {
+          input.name = input.name.replace(/lecturesModify\[\d+\]/, `lecturesModify[${i}]`);
+        });
+
+        const sectionHidden = row.querySelector(`input[name='lecturesModify[${i}].sectionNo']`);
+        if (sectionHidden) sectionHidden.value = i + 1;
+
+        // ▶ span으로 갱신
+        const span = row.querySelector("td > span");
+        if (span) span.textContent = `${i + 1}강`;
+      });
+    }
+
+    // 제출 전 마지막 정리
+    document.getElementById("modifyForm").addEventListener("submit", function (e) {
+      // 인덱스 최종 보정
+      const rows = document.querySelectorAll("#lectureTable tbody tr");
+      rows.forEach((tr, i) => {
+        tr.querySelectorAll("[name^='lecturesModify[']").forEach(input => {
+          input.name = input.name.replace(/lecturesModify\[\d+\]/, `lecturesModify[${i}]`);
+        });
+      });
+
+      if (!this.checkValidity()) { e.preventDefault(); this.reportValidity(); return; }
+      if (!confirm("수정 요청을 보낼까요?")) { e.preventDefault(); return; }
+    });
+  </script>
+</body>
+
+</html>

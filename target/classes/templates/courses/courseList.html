@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>강좌 목록</title>
+    <link rel="stylesheet" th:href="@{/css/course_list.css}" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/bootstrap/dist/css/adminlte.min.css}">
+</head>
+
+<body>
+    <th:block th:insert="~{modules/header.html}" />
+
+    <main class="course-list">
+        <h2>보낸 수정 목록</h2>
+
+
+        <form id="filterForm" th:action="@{/courses/list}" method="get">
+            <select name="searchType">
+                <option value="">전체</option>
+                <option value="as" th:selected="${pageMaker.searchType == 'as'}">승인 상태</option>
+                <option value="m" th:selected="${pageMaker.searchType == 'm'}">수정 상태</option>
+            </select>
+
+            <select name="keyword">
+                <option value="">전체</option>
+                <option value="PENDING" th:selected="${pageMaker.keyword == 'PENDING'}">대기</option>
+                <option value="POSITIVE" th:selected="${pageMaker.keyword == 'POSITIVE'}">승인</option>
+                <option value="NEGATIVE" th:selected="${pageMaker.keyword == 'NEGATIVE'}">거절</option>
+            </select>
+
+            <button type="submit">검색</button>
+        </form>
+
+        <!-- ✅ 아래쪽 강좌 목록 테이블 -->
+        <section class="course-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>강좌명</th>
+                        <th>강사명</th>
+                        <th>카테고리</th>
+                        <th>상태</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="course, stat : ${courses}"
+                        th:onclick="|location.href='@{/courses/detail(courseId=${course.courseId})}'|"
+                        style="cursor:pointer;">
+                        <td th:text="${stat.count + pageMaker.startRow}"></td>
+                        <td th:text="${course.title}"></td>
+                        <td th:text="${course.instructorName}"></td>
+                        <td th:text="${course.category}"></td>
+                        <td th:text="${course.status}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ✅ 페이지네이션 -->
+        <div class="card-footer">
+            <th:block th:insert="~{modules/pagination.html}" />
+        </div>
+    </main>
+
+    <script>
+        function filterStatus(value) {
+            if (value === "") {
+                window.location.href = "/courses";
+            } else {
+                window.location.href = `/courses?searchType=as&keyword=${value}`;
+            }
+        }
+    </script>
+
+
+    <th:block th:insert="~{modules/footer.html}" />
+    <th:block th:insert="~{modules/common_js.html}" />
+</body>
+
+</html>

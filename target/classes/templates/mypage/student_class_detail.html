@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>내 강좌 상세페이지</title>
+  <link rel="stylesheet" th:href="@{/css/student_class_detail.css}" />
+</head>
+
+<body>
+  <th:block th:insert="~{modules/header}" />
+  <main class="mypage-container">
+    <!-- 사이드바 -->
+    <aside class="mypage-sidebar">
+      <nav class="sidebar-menu">
+        <h3>강좌</h3>
+        <ul>
+          <li><a th:href="@{/mypage/mycourse}" class="active">내 강좌</a>
+          </li>
+          <li><a th:href=@{/question/list} class="active">질의 응답</a>
+          </li>
+        </ul>
+
+        <h3>마이페이지</h3>
+        <ul>
+          <li><a href="#">찜 목록</a></li>
+          <li><a href="#">결제 내역</a></li>
+          <li><a th:href="@{/mypage/info}">내 정보</a></li>
+          <li><a th:href="@{/mypage/pwdcheck}">비밀번호 변경</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- 메인 콘텐츠 -->
+    <section class="mypage-content mycourse">
+      <!-- 제목 + 밑줄 -->
+      <header class="mc-header">
+        <h2 class="mc-title-lg">내 강좌</h2>
+      </header>
+
+      <!-- 강좌 상세 -->
+      <div class="course-detail">
+        <!-- 상단: 썸네일 + 정보 -->
+        <section class="cd-top">
+          <div class="cd-thumb">
+            <img src="file:///C:/dw/project/smartedu/src/main/resources/static/img/thumbnail.webp" alt="강좌 썸네일" />
+          </div>
+
+          <div class="cd-info">
+            <h1 class="cd-title">HTML/CSS 웹입문</h1>
+            <p class="cd-row"><strong>강사명:</strong> 김코딩</p>
+            <p class="cd-row"><strong>총 회차:</strong> 20강</p>
+            <p class="cd-desc">
+              <strong>강좌 소개:</strong>
+              기초부터 실습까지 HTML/CSS의 핵심을 학습합니다.
+            </p>
+          </div>
+        </section>
+
+        <!-- 강의 목차 -->
+        <section class="cd-curriculum">
+          <h2 class="cd-subtitle">강의 목차</h2>
+          <div class="cd-cur-list">
+            <table>
+              <thead>
+                <tr>
+                  <th>회차</th>
+                  <th>강의명</th>
+                  <th>재생</th>
+                  <th>진행율</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1강</td>
+                  <td>HTML 기본 구조</td>
+                  <td>
+                    <!-- 동영상 파일 경로만 data-src에 넣어주면 됨 -->
+                    <button class="play-btn"
+                      data-src="file:///C:/dw/project/smartedu/src/main/resources/static/videos/sample.mp4"
+                      data-title="HTML 기본 구조" data-ep="1">▶</button>
+                  </td>
+                  <td class="progress-text">100%</td>
+                </tr>
+
+                <tr>
+                  <td>2강</td>
+                  <td>텍스트, 링크, 이미지</td>
+                  <td>
+                    <button class="play-btn"
+                      data-src="file:///C:/dw/project/smartedu/src/main/resources/static/videos/sample2.mp4"
+                      data-title="텍스트, 링크, 이미지" data-ep="2">▶</button>
+                  </td>
+                  <td class="progress-text">60%</td>
+                </tr>
+
+                <tr>
+                  <td>3강</td>
+                  <td>CSS 선택자 이해</td>
+                  <td>
+                    <button class="play-btn"
+                      data-src="file:///C:/dw/project/smartedu/src/main/resources/static/videos/sample3.mp4"
+                      data-title="CSS 선택자 이해" data-ep="3">▶</button>
+                  </td>
+                  <td class="progress-text">20%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+    </section>
+  </main>
+  <th:block th:insert="~{modules/footer}" />
+</body>
+<script src="file:///C:/dw/project/smartedu/src/main/resources/static/js/popup.js" th:href="@{/js/popup.js}"></script>
+
+</html>

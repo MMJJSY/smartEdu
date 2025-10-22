@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>내 강좌</title>
+    <link rel="stylesheet" th:href="@{/css/instructor_courses.css}">
+</head>
+
+<body>
+    <main class="course-list-container">
+        <div class="header">
+            <h2>내 강좌</h2>
+            <div class="filter-box">
+                <select id="statusFilter" onchange="filterCourses()">
+                    <option value="">전체</option>
+                    <option value="PENDING">대기중</option>
+                    <option value="OPEN">개강</option>
+                    <option value="CLOSE">종료</option>
+                </select>
+                <button class="btn-create" th:onclick="|location.href='@{/courses/registForm}'|">새 강좌 신청</button>
+            </div>
+        </div>
+
+        <section class="course-list">
+            <table>
+                <thead>
+                    <tr>
+                        <th>강좌명</th>
+                        <th>카테고리</th>
+                        <th>강사명</th>
+                        <th>승인 상태</th>
+                        <th>개강 상태</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="course : ${courseList}" th:classappend="${course.status?.name()}"
+                        th:onclick="|location.href='@{/courses/detail(courseId=${course.courseId})}'|">
+                        <td th:text="${course.title}">스프링 입문</td>
+                        <td th:text="${course.category}">백엔드</td>
+                        <td th:text="${course.instructorName}">홍길동</td>
+                        <td th:switch="${course.approvedStatus?.name()}">
+                            <span th:case="'PENDING'" class="status pending">요청중</span>
+                            <span th:case="'POSITIVE'" class="status approved">승인완료</span>
+                            <span th:case="'NEGATIVE'" class="status rejected">반려</span>
+                        </td>
+                        <td th:switch="${course.status?.name()}">
+                            <span th:case="'PENDING'" class="status wait">대기</span>
+                            <span th:case="'OPEN'" class="status open">개강</span>
+                            <span th:case="'CLOSE'" class="status close">종료</span>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(courseList)}">
+                        <td colspan="5" class="empty">등록된 강좌가 없습니다.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <div class="pagination">
+            <a th:if="${pageMaker.prev}"
+                th:href="@{|/courses/instructor/list?page=${pageMaker.startPage - 1}|}">&lt;</a>
+            <a th:each="p : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}" th:text="${p}"
+                th:href="@{|/courses/instructor/list?page=${p}|}"
+                th:classappend="${p == pageMaker.page} ? 'active'"></a>
+            <a th:if="${pageMaker.next}" th:href="@{|/courses/instructor/list?page=${pageMaker.endPage + 1}|}">&gt;</a>
+        </div>
+    </main>
+
+    <script>
+        function filterCourses() {
+            const selected = document.getElementById("statusFilter").value;
+            if (selected === "") {
+                window.location.href = "/courses/instructor/list";
+            } else {
+                window.location.href = "/courses/instructor/list?status=" + selected;
+            }
+        }
+    </script>
+</body>
+
+</html>

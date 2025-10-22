@@ -1,0 +1,122 @@
+@charset "utf-8";
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+  font-family: "맑은 고딕", "Noto Sans KR", sans-serif;
+}
+
+main,
+.wrapper{
+  padding-top: var(--header-h); /* 헤더보이게 조정햇슴 */
+}
+
+*, *::before, *::after { box-sizing: inherit; }
+
+ul, ol { list-style: none; margin: 0; padding: 0; }
+a { text-decoration: none; color: inherit; }
+
+/* ===== 사이드바 전체 ===== */
+.sidebar-inner {
+  width: 220px;
+  background: #eaf4fe;
+  min-height: 100%;
+  padding: 30px 0 30px 0;
+  border-right: 1px solid #d0d0d0;
+}
+
+/* ===== 상위 메뉴 제목 (강좌, 마이페이지 등) ===== */
+.menu-title {
+  display: block;
+  font-size: 18px;
+  color: #0b518f;
+  font-weight: 700;
+  margin: 10px 0 10px 35px;
+}
+
+/* ===== 하위 메뉴 목록 ===== */
+.submenu {
+  padding-left: 45px;
+}
+
+.submenu li {
+  margin: 7px 0;
+}
+
+/* ===== 링크 기본 스타일 ===== */
+.submenu a {
+  display: block;
+  text-decoration: none;
+  color: #111827;
+  font-size: 15px;
+  padding: 10px 10px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* ===== 호버 시 ===== */
+.submenu a:hover {
+  background-color: #70a8dd;
+  color: #fff;
+}
+
+/* ===== 활성화(active) 메뉴 ===== */
+.submenu a.active {
+  background-color: #70a8dd;
+  color: #ffffff;
+}
+
+/* ===== hover + active 동시에 ===== */
+.submenu a.active:hover {
+  background-color: #70a8dd;
+  color: #ffffff;
+}
+
+/* ===== (준비중) 텍스트인데 넣으면 또 바꿔야 함 ===== */
+.submenu.empty .disabled {
+  color: #9ca3af;
+  font-size: 14px;
+  display: block;
+  padding: 6px 10px;
+}
+
+:root{
+  /* 프로젝트에 맞게 이미 쓰고 있는 값 유지하세요 */
+  --header-h: 64px;        /* 헤더 높이 (이미 쓰는 값이면 그대로) */
+  --footer-h: 0px;         /* 푸터가 고정 높이면 실제 높이로, 모르면 0px로 둬도 OK */
+}
+
+/* 사이드바와 본문을 감싸는 행 컨테이너가 있다면 flex 배치 */
+.content-row{
+  display: flex;
+  align-items: stretch;   /* 양쪽 동일 높이 */
+  /* 필요시 gap: 0; */
+}
+
+/* 기존 사이드바 스타일에서 고정 높이 제거 + 유연 높이 적용 */
+.sidebar-inner {
+  width: 220px;
+  flex: 0 0 220px;               /* 고정 너비, 높이는 유연 */
+  background: #eaf4fe;
+  /* ❌ min-height: 720px;  제거 */
+  min-height: calc(100vh - var(--header-h) - var(--footer-h));  /* 뷰포트에서 헤더/푸터 뺀 높이 */
+  padding: 30px 0;
+  border-right: 1px solid #d0d0d0;
+
+  /* 헤더가 fixed인 경우 스크롤 시 헤더 밑에 붙도록 */
+  position: sticky;
+  top: var(--header-h);
+}
+
+/* 본문 영역은 남은 공간 차지 */
+.main-content{
+  flex: 1 1 auto;
+  min-width: 0;  /* 긴 내용 줄바꿈/스크롤 안전 */
+}
+
+/* 헤더가 fixed라서 패딩으로 공간 확보하는 패턴을 쓰는 경우 유지 */
+main, .wrapper{
+  padding-top: var(--header-h);
+  /* 푸터가 fixed라면 아래도 주면 좋음 */
+  padding-bottom: var(--footer-h);
+}

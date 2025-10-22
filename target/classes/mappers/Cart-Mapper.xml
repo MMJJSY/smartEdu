@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Cart-Mapper">
+
+  <!-- 1) 장바구니 + 강좌 JOIN 목록 -->
+<select id="selectCartItemsWithCourseByStudentId"
+        parameterType="int"
+        resultType="cartItem">
+  SELECT
+    c.cart_id,
+    c.student_id,
+    c.course_id,
+    c.course_amount,
+    c.created_at,
+    c.updated_at,
+    cr.title        AS course_title,
+    cr.category     AS course_category,   -- ✅ VO: courseCategory
+    cr.img          AS course_img,
+    cr.description  AS course_description,
+    cr.view_count   AS course_view_count,
+    CAST(cr.price AS DECIMAL(12,0)) AS course_price,
+    cr.status       AS course_status,
+    m.name          AS instructor_name    -- ✅ VO: instructorName
+  FROM Carts c
+  JOIN Courses cr ON cr.course_id = c.course_id
+  JOIN Members m  ON m.member_id = cr.instructor_id
+  WHERE c.student_id = #{param1}
+  ORDER BY c.created_at DESC, c.cart_id DESC
+</select>
+
+
+  <!-- 2) 업서트: UNIQUE(student_id, course_id) 전제 -->
+<insert id="upsertCart" parameterType="map">
+  INSERT INTO Carts (student_id, course_id, course_amount, created_at, updated_at)
+  VALUES (#{studentId}, #{courseId}, #{courseAmount}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+  ON DUPLICATE KEY UPDATE
+    course_amount = VALUES(course_amount),
+    updated_at    = CURRENT_TIMESTAMP
+</insert>
+
+
+  <!-- 3) 단건 삭제 -->
+  <delete id="deleteCartByStudentAndCourse">
+    DELETE FROM Carts
+    WHERE student_id = #{param1}
+      AND course_id  = #{param2}
+  </delete>
+
+  <!-- 4) 합계 -->
+  <select id="sumCartAmountByStudentId" parameterType="int" resultType="long">
+    SELECT COALESCE(SUM(CAST(cr.price AS DECIMAL(12,0))), 0)
+    FROM Carts c
+    JOIN Courses cr ON cr.course_id = c.course_id
+    WHERE c.student_id = #{param1}
+  </select>
+
+  <!-- 장바구니에 담긴 course_id 목록 -->
+  <select id="selectCourseIdsInCartByStudentId"
+          parameterType="int"
+          resultType="int">
+    SELECT course_id
+    FROM Carts
+    WHERE student_id = #{param1}
+    ORDER BY created_at DESC, cart_id DESC
+  </select>
+
+  <!-- 장바구니에 이미 있는지 여부 -->
+  <select id="existsByStudentAndCourse" parameterType="map" resultType="int">
+    SELECT COUNT(*)
+    FROM Carts
+    WHERE student_id = #{param1}
+      AND course_id  = #{param2}
+  </select>
+
+
+
+</mapper>

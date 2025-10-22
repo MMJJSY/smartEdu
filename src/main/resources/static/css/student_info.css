@@ -1,0 +1,176 @@
+@charset "utf-8";
+
+/* =========================
+   디자인 토큰
+   ========================= */
+:root{
+  --bg: #f5f7fb;
+  --card-bg: #ffffff;
+  --ink: #0f172a;
+  --muted: #64748b;
+  --primary: #0b518f;
+  --primary-weak: #e8f0ff;
+  --line: #e5e7eb;
+
+  --radius: 16px;
+  --shadow: 0 10px 30px rgba(2, 6, 23, .06);
+}
+
+/* =========================
+   레이아웃 & 타이포
+   ========================= */
+*{ box-sizing: border-box; }
+html, body{ height: 100%; }
+body{
+  margin: 0;
+  font-family: "Noto Sans KR","맑은 고딕", system-ui, sans-serif;
+  color: var(--ink);
+  background: #fff;
+}
+
+/* 컨테이너 */
+.info-container{
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #fff; 
+}
+
+/* 상단 헤더*/
+.top-header{
+  width: 100%;
+  background: #fff;
+  padding: 20px 28px;
+  border-bottom: 1px solid rgba(255,255,255,.2);
+}
+.top-header h1{
+  font-size: 22px;
+  font-weight: 700;
+  color: #001c53;
+  border-left: 4px solid #3d86c6;
+  padding-left: 12px;
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+/* 본문 카드 */
+.info-main{
+  width: 100%;
+  max-width: 760px;
+  margin: 40px auto 64px;
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 28px 32px;
+}
+
+/* 섹션 타이틀 */
+.info-main h2{
+  margin: 0 0 20px;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--primary);
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--primary-weak);
+}
+
+/* 폼 그리드 */
+.info-form{
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 18px 20px;
+}
+
+/* 레이블 */
+.form-row{
+  display: contents; /* 그리드 셀로만 배치 */
+}
+.form-row label{
+  align-self: center;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* 입력 공통 */
+.info-form input[type="text"]{
+  width: 100%;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0 12px;
+  font-size: 15px;
+  background: #f8fafc;
+  color: var(--ink);
+}
+.info-form input[readonly]{
+  cursor: default;
+  outline: none;
+}
+.info-form input[type="text"]:focus-visible{
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, .12);
+  background: #fff;
+}
+
+/* 전화번호: 칩 형태로 */
+.phone-inputs{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  padding: 6px 10px;
+  height: 44px;
+}
+.phone-inputs input{
+  width: 68px;
+  height: 30px;
+  border: 0;
+  background: transparent;
+  text-align: center;
+  font-size: 15px;
+  color: var(--ink);
+  padding: 0 2px;
+}
+.phone-inputs input:focus-visible{
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 6px;
+  background: #fff;
+}
+.phone-inputs span{
+  color: var(--muted);
+  user-select: none;
+}
+
+/* 빈 칸 보호용(길어질 때 줄바꿈 처리) */
+.info-form .value-wrap{
+  min-width: 0;
+}
+
+/* 미세한 도움 텍스트가 필요할 때 (옵션) */
+.help{
+  grid-column: 2 / 3;
+  margin-top: -8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* =========================
+   반응형
+   ========================= */
+@media (max-width: 720px){
+  .info-main{
+    margin: 24px 16px 48px;
+    padding: 22px 18px 26px;
+  }
+  .info-form{
+    grid-template-columns: 1fr; /* 한 줄로 */
+    gap: 12px;
+  }
+  .form-row label{
+    margin-top: 6px;
+  }
+  .phone-inputs{ width: 100%; justify-content: center; }
+}
+

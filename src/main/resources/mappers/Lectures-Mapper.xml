@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Lectures-Mapper">
+
+    <!-- 조회: 강좌별 강의 목록 -->
+    <select id="findLecturesByCourseId" resultType="lecture" parameterType="int">
+        SELECT *
+        FROM Lectures
+        WHERE course_id = #{courseId}
+        ORDER BY section_no ASC, lecture_id ASC
+    </select>
+
+    <!-- 강의 상세 조회 -->
+    <select id="getLecture" resultType="lecture" parameterType="int">
+        SELECT *
+        FROM Lectures
+        WHERE lecture_id = #{lectureId}
+    </select>
+
+    <!-- 추가 -->
+    <insert id="addLecture" parameterType="lecture" useGeneratedKeys="true" keyProperty="lectureId">
+        INSERT INTO Lectures (course_id, section_no, title, video, description, status)
+        VALUES (#{courseId}, #{sectionNo}, #{title}, #{video}, #{description}, #{status})
+    </insert>
+
+    <!-- 수정 -->
+    <update id="updateLecture" parameterType="lecture">
+        UPDATE Lectures
+        SET section_no = #{sectionNo},
+            title = #{title},
+            status = #{status},
+            video = #{video},
+            description = #{description}
+        WHERE lecture_id = #{lectureId}
+    </update>
+
+    <!-- 삭제 -->
+    <delete id="deleteLecture" parameterType="int">
+        DELETE FROM Lectures
+        WHERE lecture_id = #{lectureId}
+    </delete>
+
+</mapper>

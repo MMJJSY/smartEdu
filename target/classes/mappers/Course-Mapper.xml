@@ -1,0 +1,134 @@
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Course-Mapper">
+
+    <!-- 공통 검색 조건 -->
+    <sql id="search">
+        <if test="statusFilter != null and statusFilter != ''"> AND c.status = #{statusFilter} </if>
+        <if
+            test="categoryFilter != null and categoryFilter != ''"> AND c.category =
+        #{categoryFilter} </if>
+        <if test="keyword != null and keyword != ''">
+            <choose>
+                <when test="keyword == 'HAS_STATUS'"> AND c.status IS NOT NULL </when>
+                <!-- ✅ 수정요청 상태(modify_status) NULL 제외 -->
+                <when test="keyword == 'HAS_MODIFY'"> AND c.modify_status IS NOT NULL </when>
+                <when test="searchType == 't'.toString()"> AND c.title LIKE CONCAT('%', #{keyword},
+        '%') </when>
+                <when test="searchType == 'i'.toString()"> AND m.name LIKE CONCAT('%', #{keyword},
+        '%') </when>
+                <when test="searchType == 'c'.toString()"> AND c.category LIKE CONCAT('%',
+        #{keyword}, '%') </when>
+                <when test="searchType == 'd'.toString()"> AND c.description LIKE CONCAT('%',
+        #{keyword}, '%') </when>
+                <when test="searchType == 'as'.toString()"> AND c.approved_status LIKE CONCAT('%',
+        #{keyword}, '%') </when>
+                <when test="searchType == 's'.toString()"> AND c.status LIKE CONCAT('%', #{keyword},
+        '%') </when>
+                <when test="searchType == 'm'.toString()"> AND c.modify_status LIKE CONCAT('%',
+        #{keyword}, '%') </when>
+                <when test="searchType == 'td'.toString()"> AND (c.title LIKE CONCAT('%',
+        #{keyword}, '%') OR c.description LIKE CONCAT('%', #{keyword}, '%')) </when>
+                <when test="searchType == 'id'.toString()"> AND (m.name LIKE CONCAT('%', #{keyword},
+        '%') OR c.description LIKE CONCAT('%', #{keyword}, '%')) </when>
+            </choose>
+        </if>
+    </sql>
+
+    <!-- 강좌 목록 조회 -->
+    <select id="selectCoursesList" resultType="course" parameterType="pageMaker"> SELECT c.*, m.name
+        AS instructor_name FROM Courses c LEFT JOIN Members m ON c.instructor_id = m.member_id WHERE
+        c.course_id IS NOT NULL <include refid="search" />
+        <choose>
+            <when test="orderBy != null and orderBy eq 'popular'"> ORDER BY c.view_count DESC </when>
+            <otherwise> ORDER BY c.created_at DESC </otherwise>
+        </choose> LIMIT #{startRow},
+        #{perPageNum} </select>
+
+    <!-- 강좌 개수 조회 -->
+    <select id="countCoursesList" resultType="int" parameterType="pageMaker"> SELECT COUNT(*) FROM
+        Courses c LEFT JOIN Members m ON c.instructor_id = m.member_id WHERE c.course_id IS NOT NULL <include
+            refid="search" />
+    </select>
+
+    <!-- 단건 조회 -->
+    <select id="findCourseById" resultType="course" parameterType="int"> SELECT c.*, m.name AS
+        instructor_name FROM Courses c LEFT JOIN Members m ON c.instructor_id = m.member_id WHERE
+        c.course_id = #{value} </select>
+
+    <!-- 조회수 증가 -->
+    <update id="incrementViewCount" parameterType="int"> UPDATE Courses SET view_count = view_count
+        + 1 WHERE course_id = #{value} </update>
+
+    <!-- 강좌 개설 -->
+    <insert id="insertCourse" parameterType="course"
+        useGeneratedKeys="true" keyProperty="courseId"> INSERT INTO Courses (title, price,
+        instructor_id, category, img, description, curriculum, created_at) VALUES (#{title},
+        #{price}, #{instructorId}, #{category}, #{img}, #{description}, #{curriculum}, NOW()) </insert>
+
+    <update id="updateCourse" parameterType="course"> UPDATE Courses <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="price != null">price =
+        #{price},</if>
+            <if test="category != null">category = #{category},</if>
+            <if test="img != null">img
+        = #{img},</if>
+            <if test="description != null">description = #{description},</if>
+            <if
+                test="curriculum != null">curriculum = #{curriculum},</if>
+
+            <!-- ✅ 승인 상태 -->
+            <if
+                test="approvedStatus != null"> approved_status = #{approvedStatus}, <!-- 승인 승인 시 상태 자동 변경 -->
+                <if
+                    test="approvedStatus.name() == 'POSITIVE'"> status = 'PENDING', </if>
+            </if>
+
+            <!-- ✅ 수정 요청 상태 -->
+            <if
+                test="modifyStatus != null">modify_status = #{modifyStatus},</if>
+
+            <!-- ✅ 상태(status)는 맨 마지막에 -->
+            <if
+                test="status != null">status = #{status},</if> updated_at = NOW(), <if
+                test="modifyComment != null">modify_comment = #{modifyComment},</if>
+        </set>
+        WHERE course_id = #{courseId} </update>
+
+    <!-- 삭제 (논리삭제) -->
+    <update id="deleteCourse" parameterType="int"> UPDATE Courses SET status = 'CLOSE', updated_at =
+        NOW() WHERE course_id = #{value} </update>
+
+    <!-- 인기 강좌 (조회수 높은 순 TOP 4) -->
+    <select id="selectPopularCourses" resultType="course"> SELECT c.*, m.name AS instructor_name
+        FROM Courses c LEFT JOIN Members m ON c.instructor_id = m.member_id WHERE c.approved_status
+        = 'POSITIVE' AND c.status = 'OPEN' ORDER BY c.view_count DESC LIMIT 4 </select>
+
+    <!-- 최신 강좌 (등록일 최신 TOP 4) -->
+    <select id="selectLatestCourses" resultType="course"> SELECT c.*, m.name AS instructor_name FROM
+        Courses c LEFT JOIN Members m ON c.instructor_id = m.member_id WHERE c.approved_status =
+        'POSITIVE' AND c.status = 'OPEN' ORDER BY c.created_at DESC LIMIT 4 </select>
+
+    <!-- 추천 강좌 (등록일 기준) -->
+    <select id="selectRecommendedCourses" resultType="course"> SELECT c.*, m.name AS instructor_name
+        FROM Courses c LEFT JOIN Members m ON c.instructor_id = m.member_id WHERE c.approved_status
+        = 'POSITIVE' AND c.status = 'OPEN' ORDER BY c.created_at DESC LIMIT 4 </select>
+
+    <!-- ✅ 강사 본인 강좌 + 상태 필터 (+옵션: 수정요청만 / 특정 수정상태) -->
+    <select id="findByInstructorAndStatus" parameterType="map" resultType="course"> SELECT
+        c.course_id, c.title, c.category, c.price, c.img, c.status, c.approved_status,
+        c.modify_status, c.created_at, m.name AS instructor_name FROM Courses c JOIN Members m ON
+        c.instructor_id = m.member_id WHERE c.instructor_id = #{instructorId}       <!-- (옵션) 상태 필터 -->
+  <if
+            test="status != null and status != ''"> AND c.status = #{status} </if>
+        <!-- (옵션) 수정요청만 보기 -->
+  <if
+            test="modifyOnly != null and modifyOnly == true"> AND c.modify_status IS NOT NULL </if>
+        <!-- (옵션) 수정상태 값까지 필터 (PENDING/ACTIVE/INACTIVE 등) -->
+  <if
+            test="modifyFilter != null and modifyFilter != ''"> AND c.modify_status =
+        #{modifyFilter} </if> ORDER BY c.created_at DESC </select>
+
+
+</mapper>

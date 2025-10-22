@@ -1,0 +1,219 @@
+/* ===== 수강생 등록 페이지 스타일 ===== */
+
+body {
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+    background-color: #f5f6fa;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding-top: 50px;
+}
+
+.register-form {
+    width: 400px;
+    background: #fff;
+    padding: 40px 30px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.register-form h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 24px;
+    color: #222;
+    font-weight: 700;
+}
+
+/* 각 input 그룹 */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 18px;
+}
+
+.input-group label {
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 15px;
+    color: #333;
+}
+
+.input-group input {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+    border-color: #0078ff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 120, 255, 0.1);
+}
+
+/* 전화번호 입력 부분 */
+.phone-input {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.phone-input span {
+    font-weight: bold;
+}
+
+.phone-input input {
+    width: 70px;
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* 숫자 입력 화살표 제거 (크롬 등 브라우저용) */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+
+/* 버튼 스타일 */
+button {
+    font-family: inherit;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #0078ff;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    margin-top: 8px;
+}
+
+.submit-btn:hover {
+    background-color: #005fcc;
+}
+
+.cancel-btn {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #eee;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #333;
+}
+
+.cancel-btn:hover {
+    background-color: #ddd;
+}
+
+/* 중복확인 버튼 */
+#checkEmail {
+    margin-top: 6px;
+    align-self: flex-start;
+    background-color: #ddd;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+#checkEmail:hover {
+    background-color: #ccc;
+}
+
+/* 안내 문구 */
+.info,
+#emailMsg,
+#passwordMsg {
+    font-size: 13px;
+    color: #666;
+    margin-top: 4px;
+}
+
+/* 오류 표시 */
+#error {
+    color: #e63946;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+
+
+
+
+/* 수강생, 강사 선택 페이지 */
+/* ===== 회원가입 선택 페이지: 깔끔하게 중앙 정렬 ===== */
+.register-container {
+  width: 380px;          /* 고정 폭 */
+  height: 360px;         /* 고정 높이 */
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  position: relative;
+  box-sizing: border-box;
+
+  /* Flex로 컨테이너 안에서 버튼 완전 중앙 */
+  display: flex;
+  justify-content: center;  /* 세로 중앙 */
+  align-items: center;      /* 가로 중앙 */
+}
+
+/* 버튼 영역: 가로 정렬 */
+.register-select {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+/* 버튼 스타일 */
+.register-select button {
+  width: 150px;
+  height: 120px;
+  font-size: 20px;
+  font-weight: 500;
+  border: 1.5px solid #0078ff;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #0078ff;
+  background-color: #fff;
+  transition: all 0.2s ease;
+}
+
+/* hover 시 파란색으로 변화 */
+.register-select button:hover {
+  background-color: #0078ff;
+  color: #fff;
+}
+
+/* 반응형: 작은 화면에서는 세로 정렬 */
+@media (max-width: 450px) {
+  .register-select {
+    flex-direction: column;
+    width: 90%;
+    gap: 15px;
+  }
+
+  .register-select button {
+    width: 100%;
+    height: 80px;
+  }
+}

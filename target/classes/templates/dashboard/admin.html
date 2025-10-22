@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>관리자 대시보드</title>
+  <link rel="stylesheet" th:href="@{/css/admin_dashboard.css}">
+</head>
+
+<body>
+  <main class="admin-dashboard">
+
+    <!-- ======================== -->
+    <!-- ① 강사 요청 승인 섹션 -->
+    <!-- ======================== -->
+    <section class="dashboard-section instructor-approval">
+      <h2 class="section-title">강사 요청 승인</h2>
+
+      <div class="instructor-cards">
+        <!-- 최대 4개만 보여주는 기존 반복문 유지 -->
+        <a class="instructor-card-link" th:each="inst, stat : ${pendingInstructors}" th:if="${stat.index < 4}"
+          th:href="@{/member/detail(instructorId=${inst.instructorId})}"
+          th:onclick="|return openDetailPopup('@{/member/detail(instructorId=${inst.instructorId})}')|">
+
+          <div class="instructor-card">
+            <p class="instructor-name" th:text="${inst.name}">강사이름</p>
+            <p class="status pending">승인 대기중</p>
+
+          </div>
+        </a>
+      </div>
+
+      <div th:if="${#lists.isEmpty(pendingInstructors)}" class="empty-box">
+        승인 대기중인 강사가 없습니다.
+      </div>
+
+      <!-- 4개 초과 시 더보기 -->
+      <div class="more-box" th:if="${pendingInstructors != null and pendingInstructors.size() > 4}">
+        <a class="btn-more" th:href="@{/member/dashboard/instructor_status(filter='PENDING')}">더보기</a>
+      </div>
+    </section>
+
+    <!-- ======================== -->
+    <!-- ② 강좌 요청 승인 섹션 -->
+    <!-- ======================== -->
+    <section class="dashboard-section course-approval">
+      <h2 class="section-title">강좌 요청 승인</h2>
+      <div class="course-list">
+        <table class="approval-table">
+          <thead>
+            <tr>
+              <th>강좌명</th>
+              <th>카테고리</th>
+              <th>강사</th>
+              <th>상태</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="course : ${pendingCourses}" th:onclick="|location.href='@{/courses/detail_common(
+                      courseId=${course.courseId},
+                      role='ADMIN',
+                      filterType='approved'
+                    )}'|" style="cursor:pointer;">
+              <td th:text="${course.title}">강좌명</td>
+              <td th:text="${course.category}">백엔드</td>
+              <td th:text="${course.instructorName}">홍길동</td>
+              <td>
+                <span th:switch="${course.approvedStatus?.name()}">
+                  <span th:case="'PENDING'" class="status pending">승인 대기중</span>
+                  <span th:case="'POSITIVE'" class="status approved">승인완료</span>
+                  <span th:case="'NEGATIVE'" class="status rejected">반려</span>
+                </span>
+              </td>
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(pendingCourses)}">
+              <td colspan="5" class="empty-row">승인 대기중인 강좌가 없습니다.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script th:src="@{/js/admin_dashboard.js}"></script>
+</body>
+
+</html>

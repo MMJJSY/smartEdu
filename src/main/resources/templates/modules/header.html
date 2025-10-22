@@ -1,0 +1,54 @@
+<!-- 헤더부분 -->
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<header class="header">
+    <div class="header-inner">
+
+
+        <h1 class="logo"><a th:href="@{/common/main}">SE</a></h1>
+
+
+        <nav class="main-nav">
+            <ul>
+                <li>
+                    <a th:href="@{/courses/list}">강좌</a>
+                    <ul>
+                        <li th:classappend="${selectedCategory == null} ? 'active'">
+                            <a th:href="@{/courses/list}">전체</a>
+                        </li>
+                        <li th:classappend="${selectedCategory == 'FRONTEND'} ? 'active'">
+                            <a th:href="@{/courses/list(category='FRONTEND')}">프론트엔드</a>
+                        </li>
+                        <li th:classappend="${selectedCategory == 'BACKEND'} ? 'active'">
+                            <a th:href="@{/courses/list(category='BACKEND')}">백엔드</a>
+                        </li>
+                        <li th:classappend="${selectedCategory == 'DATABASE'} ? 'active'">
+                            <a th:href="@{/courses/list(category='DATABASE')}">데이터베이스</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a th:href="@{/review}">수강생 후기</a></li>
+            </ul>
+        </nav>
+
+
+        <div class="auth-buttons">
+            <ul class="user-menu">
+                <!-- 로그인 안 된 상태 -->
+                <li th:if="${session.loginUser == null}">
+                    <a th:href="@{/common/loginForm}">로그인</a>
+                </li>
+
+
+                <!-- 로그인 된 상태 -->
+                <li th:if="${session.loginUser != null}">
+                    <a th:href="@{/dashboard}">마이페이지</a>
+                </li>
+                <li th:if="${session.loginUser != null}">
+                    <!-- 로그아웃 매핑은 /common/logout 이었음 -->
+                    <a th:href="@{/common/logout}">로그아웃</a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</header>

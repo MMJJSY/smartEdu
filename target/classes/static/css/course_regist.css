@@ -1,0 +1,93 @@
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: #f8f8f8;
+  margin: 0;
+  padding: 0;
+}
+
+.course-request {
+  max-width: 900px;
+  margin: 40px auto;
+  background: white;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+h2 {
+  margin-bottom: 20px;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+}
+
+.course-info label {
+  display: block;
+  font-weight: bold;
+  margin-top: 12px;
+}
+
+.course-info input[type="text"],
+.course-info input[type="number"],
+.course-info textarea,
+.course-info select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.lecture-section {
+  margin-top: 30px;
+}
+
+.lecture-section table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.lecture-section th, .lecture-section td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.btn-add {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.submit-box {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.btn-submit {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Smart Edu - 결제내역</title>
+  <link rel="stylesheet" th:href="@{/modules/header.css}" />
+  <link rel="stylesheet" th:href="@{/css/payment.css}" />
+</head>
+<body>
+  <!-- Header -->
+  <div id="header"></div>
+
+  <div class="wrapper">
+    <main class="payment-page">
+      <h2 class="page-title">결제 내역</h2>
+
+      <div class="notice">
+        <p>※ 환불은 결제 후 <strong>14일 이내, 강의 시청 이전인 경우</strong>에만 가능합니다.</p>
+      </div>
+
+      <section class="payment-list" th:if="${#lists.isEmpty(items)}">
+        <div class="payment-item" style="justify-content:center">결제 내역이 없습니다.</div>
+      </section>
+
+      <section class="payment-list" th:if="${!#lists.isEmpty(items)}">
+        <div th:each="it : ${items}" class="payment-item"
+             th:classappend="${it.refundable} ? ' refundable' : ''"
+             th:attr="data-status=${it.status}">
+          <div class="info">
+            <p class="course-title" th:text="${it.courseTitle}">강좌명</p>
+            <span class="category" th:text="${it.courseCategory}">카테고리</span>
+          </div>
+
+          <div class="teacher" th:text="${it.instructorName}">강사 이름</div>
+
+          <div class="price"
+               th:text="${#numbers.formatInteger((it.courseAmount == null ? 0 : it.courseAmount), 0, 'COMMA') + '원'}">
+            0원
+          </div>
+
+          <div class="date" th:text="${#dates.format(it.createdAt, 'yyyy-MM-dd')}">결제일</div>
+
+          <!-- NORMAL일 때만 환불 버튼 -->
+          <form th:if="${(it.status == null ? '' : it.status.toString()) == 'NORMAL'}"
+                th:action="@{/payment/refund}" method="post">
+            <input type="hidden" name="paymentId" th:value="${it.paymentId}"/>
+            <input type="hidden" th:if="${_csrf != null}"
+                   th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit" class="refund-btn">환불</button>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <div id="footer"></div>
+
+  <script th:src="@{/js/payment.js}"></script>
+</body>
+</html>

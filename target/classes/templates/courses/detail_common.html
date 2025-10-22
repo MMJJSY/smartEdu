@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${pageTitle}">강좌 상세보기</title>
+
+  <link rel="stylesheet" th:href="@{/css/admin_dashboard.css}">
+  <link rel="stylesheet" th:href="@{/css/detail_common.css}">
+</head>
+
+<body>
+  <main class="admin-detail">
+
+    <!-- ✅ 헤더 영역 -->
+    <div class="header">
+      <h2 th:text="${pageTitle}">강좌 상세보기</h2>
+
+      <!-- ✅ 관리자용 버튼 -->
+      <div class="actions" th:if="${role == 'ADMIN'}">
+
+        <!-- 승인요청 -->
+        <th:block th:if="${filterType == 'approved' 
+                         and course.approvedStatus.name() == 'PENDING'}">
+          <button class="btn-reject" onclick="confirmAction('NEGATIVE', 'approvedStatus')">반려</button>
+          <button class="btn-approve" onclick="confirmAction('POSITIVE', 'approvedStatus')">승인</button>
+        </th:block>
+
+        <th:block th:if="${filterType == 'modify' 
+                         and course.modifyStatus.name() == 'PENDING' }">
+          <button class="btn-reject" onclick="confirmAction('INACTIVE', 'modifyStatus')">반려</button>
+          <button class="btn-approve" onclick="confirmAction('ACTIVE', 'modifyStatus')">승인</button>
+        </th:block>
+
+        <!-- 강좌목록 상태 + 수정요청 -->
+        <th:block th:if="${filterType == 'status'}">
+          <button class="btn-warn" onclick="confirmAction('PENDING', 'status')">대기</button>
+          <button class="btn-approve" onclick="confirmAction('OPEN', 'status')">개강</button>
+          <button class="btn-reject" onclick="confirmAction('CLOSE', 'status')">종강</button>
+          <button class="btn-edit" onclick="openModifyRequest()">수정 요청</button>
+        </th:block>
+      </div>
+
+      <!-- ✅ 강사용 버튼 -->
+      <div class="actions" th:if="${role == 'INSTRUCTOR'}">
+        <button class="btn-edit"
+          th:onclick="|location.href='@{/courses/modifyForm(courseId=${course.courseId})}'|">수정하기</button>
+      </div>
+    </div>
+
+    <!-- ✅ 관리자 코멘트 -->
+    <div class="modify-comment" th:if="${course.modifyComment != null 
+             and (role == 'INSTRUCTOR' or (role == 'ADMIN' and filterType == 'modify'))}">
+      <h3 th:text="${role == 'ADMIN' ? '수정사항' : '수정사항'}">요청사항</h3>
+      <p th:text="${course.modifyComment}"></p>
+    </div>
+
+    <!-- ✅ 강좌 정보 -->
+    <section class="course-main">
+      <div class="course-thumb">
+        <img th:if="${course.img}" th:src="@{'/upload/course/' + ${course.img}}" alt="썸네일">
+        <span th:if="${course.img == null}">썸네일 없음</span>
+      </div>
+
+      <div class="course-info">
+        <p><strong>강좌명:</strong> <span th:text="${course.title}"></span></p>
+        <p><strong>강사명:</strong> <span th:text="${course.instructorName}"></span></p>
+        <p><strong>등록일:</strong> <span th:text="${#dates.format(course.createdAt, 'yyyy-MM-dd')}"></span></p>
+        <p><strong>카테고리:</strong> <span th:text="${course.category}"></span></p>
+        <p><strong>가격:</strong> <span th:text="${course.price} + '원'"></span></p>
+        <p><strong>강좌 소개:</strong></p>
+        <p th:text="${course.description}"></p>
+      </div>
+    </section>
+
+    <!-- ✅ 강의 목록 -->
+    <section class="lecture-list">
+      <h3>강의 목록</h3>
+      <table class="lecture-table">
+        <thead>
+          <tr>
+            <th>회차</th>
+            <th>강의명</th>
+            <th>강의 보기</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="lec, stat : ${lectureList}">
+            <td th:text="${lec.sectionNo}"></td>
+            <td th:text="${lec.title}"></td>
+            <td>
+              <button class="btn-play"
+                th:onclick="|window.open('@{/courses/getVideoPage(lectureId=${lec.lectureId})}', '_blank', 'width=960,height=540,resizable=yes');|">
+                ▶ 보기
+              </button>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(lectureList)}">
+            <td colspan="3">등록된 강의가 없습니다.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ✅ 상태 변경 form -->
+    <form id="approvalForm" th:action="@{/courses/updateStatusUnified}" method="post">
+      <input type="hidden" name="courseId" th:value="${course.courseId}">
+      <input type="hidden" id="statusField" name="statusField">
+      <input type="hidden" id="statusValue" name="statusValue">
+      <input type="hidden" id="modifyComment" name="modifyComment">
+      <input type="hidden" name="role" th:value="${role}">
+      <input type="hidden" name="filterType" th:value="${filterType}">
+      <input type="hidden" name="filter" th:value="${selectedFilter}">
+    </form>
+
+    <div class="btn-box">
+      <a th:href="@{/courses/list_common(role=${role}, filterType=${filterType})}" class="btn-back">목록으로 돌아가기</a>
+    </div>
+  </main>
+
+  <!-- ✅ JS -->
+  <script>
+    let selectedField = null;
+    let selectedValue = null;
+
+    function confirmAction(value, field) {
+      let message = '';
+
+      // 상태별 확인 메시지 설정
+      if (field === 'modifyStatus') {
+        message = (value === 'ACTIVE')
+          ? '정말 승인하시겠습니까?'
+          : '정말 반려하시겠습니까?';
+      } else if (field === 'approvedStatus') {
+        message = (value === 'POSITIVE')
+          ? '정말 승인하시겠습니까?'
+          : '정말 반려하시겠습니까?';
+      } else if (field === 'status') {
+        if (value === 'OPEN') message = '강좌를 개강 상태로 변경하시겠습니까?';
+        else if (value === 'CLOSE') message = '강좌를 종강 상태로 변경하시겠습니까?';
+        else message = '강좌 상태를 대기로 변경하시겠습니까?';
+      }
+
+      // ✅ 확인창 표시
+      if (!confirm(message)) {
+        return; // 취소 누르면 종료
+      }
+
+      // ✅ 폼 값 설정
+      document.getElementById('statusField').value = field;
+      document.getElementById('statusValue').value = value;
+
+      // ✅ 폼 전송
+      document.getElementById('approvalForm').submit();
+    }
+
+    // ✅ 관리자 수정 요청 팝업
+    function openModifyRequest() {
+      const comment = prompt("강사에게 전달할 수정 요청 내용을 입력하세요.");
+      if (!comment) return;
+
+      document.getElementById('statusField').value = 'modifyStatus';
+      document.getElementById('statusValue').value = 'REQUEST'; 
+      document.getElementById('modifyComment').value = comment;
+
+      document.getElementById('approvalForm').submit();
+    }
+  </script>
+
+</body>
+
+</html>

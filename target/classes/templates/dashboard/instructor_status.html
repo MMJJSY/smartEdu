@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>강사 수정 요청 목록</title>
+    <link rel="stylesheet" th:href="@{/css/admin_dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/paging.css}">
+    <style>
+        .approval-table tbody tr {
+            transition: background .15s ease;
+        }
+
+        .approval-table tbody tr:hover {
+            background: #f7fbff;
+        }
+
+        .btn-download {
+            color: #2d6cdf;
+            text-decoration: underline;
+        }
+
+        .status.pending {
+            color: #e67e22;
+            font-weight: 700;
+        }
+
+        .status.active {
+            color: #16a34a;
+            font-weight: 700;
+        }
+
+        .status.inactive {
+            color: #dc2626;
+            font-weight: 700;
+        }
+
+        .empty-row {
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .filter-box {
+            display: flex;
+            justify-content: flex-start;
+            /* ← 변경 */
+            margin: 10px 0 18px;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .filter-box select {
+            padding: 8px 10px;
+            border: 1px solid #dce2ee;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="admin-dashboard">
+
+        <h2>강사 수정 요청 목록</h2>
+
+        <!-- ✅ 필터 영역 -->
+        <div class="filter-box">
+            <!-- 🔸 컨트롤러 매핑과 동일한 경로로 통일 -->
+            <form th:action="@{/member/dashboard/instructor_status}" method="get" style="margin:0;">
+                <label>상태 필터:</label>
+                <select name="filter" onchange="this.form.submit()">
+                    <option value="" th:selected="${selectedFilter == ''}">전체</option>
+                    <option value="PENDING" th:selected="${selectedFilter == 'PENDING'}">대기</option>
+                    <option value="APPROVED" th:selected="${selectedFilter == 'APPROVED'}">승인됨</option>
+                    <option value="REJECTED" th:selected="${selectedFilter == 'REJECTED'}">거절됨</option>
+                </select>
+            </form>
+        </div>
+
+        <!-- ✅ 리스트 테이블 (뷰에서는 추가 필터링 없이 그대로 출력) -->
+        <table class="approval-table">
+            <thead>
+                <tr>
+                    <th>이름</th>
+                    <th>이메일</th>
+                    <th>이력서</th>
+                    <th>상태</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="inst : ${instructorList}"
+                    th:onclick="|openDetailPopup('@{/member/detail(instructorId=${inst.instructorId})}')|"
+                    style="cursor:pointer;">
+                    <td th:text="${inst.name}">홍길동</td>
+                    <td th:text="${inst.email}">hong@test.com</td>
+                    <td>
+                        <a th:if="${inst.resume != null}" th:href="@{'/upload/resume/' + ${inst.resume}}"
+                            class="btn-download" download>이력서 다운로드</a>
+                        <span th:if="${inst.resume == null}" style="color:#94a3b8;">첨부 없음</span>
+                    </td>
+                    <td>
+                        <span th:switch="${inst.pendingStatus}">
+                            <span th:case="${T(com.application.smartEdu.enums.PendingStatus).PENDING}"
+                                class="status pending">대기</span>
+                            <span th:case="${T(com.application.smartEdu.enums.PendingStatus).APPROVED}"
+                                class="status active">승인됨</span>
+                            <span th:case="${T(com.application.smartEdu.enums.PendingStatus).REJECTED}"
+                                class="status inactive">거절됨</span>
+                            <span th:case="*">-</span>
+                        </span>
+                    </td>
+                </tr>
+
+                <!-- 비었을 때 -->
+                <tr th:if="${#lists.isEmpty(instructorList)}">
+                    <td colspan="4" class="empty-row">표시할 데이터가 없습니다.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- ✅ 공용 페이지네이션 -->
+        <div class="pagination">
+            <th:block th:insert="~{modules/paging.html}" />
+        </div>
+    </main>
+
+    <script>
+        function openDetailPopup(url) {
+            const width = 900, height = 700;
+            const left = (window.screen.width - width) / 2;
+            const top = (window.screen.height - height) / 2;
+            const opts = `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes,status=no`;
+            window.open(url, "_blank", opts);
+        }
+    </script>
+
+</body>
+
+</html>

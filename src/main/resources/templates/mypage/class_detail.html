@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>강좌 상세보기</title>
+    <link rel="stylesheet"  href="file:///C:/dw/project/smartedu/src/main/resources/static/css/class_detail.css" th:href="@{/css/class_detail.css}"/>
+
+</head>
+<body>
+    <main class="course-detail">
+  <!-- 상단: 강좌 썸네일 + 정보 -->
+  <section class="course-top">
+    <div class="course-thumb">
+      <img src="file:///C:/dw/project/smartedu/src/main/resources/static/img/thumbnail.webp" alt="강좌 썸네일">
+    </div>
+
+    <div class="course-info">
+      <h2 class="course-title">HTML/CSS 웹입문</h2>
+      <p>강사 : <strong>김코딩</strong></p>
+      <p>총 회차 : <strong>10강</strong></p>
+      <p class="course-desc">
+        강좌 소개 : 
+        <strong>이 강좌는 HTML과 CSS의 기초를 배우며 웹페이지 구조를 설계하는 방법을 익힙니다.</strong>
+      </p>
+    </div>
+  </section>
+  <section class="course-purchase">
+    <p class="price">가격: <span>100,000원</span></p>
+    <button id="wishlistBtn" class="wishlist-btn">❤️ 찜하기</button>
+  </section>
+
+  <!-- 하단: 커리큘럼 -->
+  <section class="curriculum">
+    <h3>커리큘럼</h3>
+    <div class="curriculum-list">
+      <table>
+        <thead>
+          <tr>
+            <th>회차</th>
+            <th>강의명</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1강</td><td>HTML 기본 구조</td></tr>
+          <tr><td>2강</td><td>CSS 선택자 이해</td></tr>
+          <tr><td>3강</td><td>Flexbox 레이아웃</td></tr>
+          <tr><td>4강</td><td>미디어쿼리 반응형</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script src="file:///C:/dw/project/smartedu/src/main/resources/static/js/contain.js" th:href="@{/js/contain.js}"></script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>강사 대시보드</title>
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+  <link rel="stylesheet" th:href="@{/css/instructor.css}">
+
+</head>
+
+<body>
+
+  <!-- ======================== -->
+  <!-- ① 승인 대기 강좌 목록 -->
+  <!-- ======================== -->
+  <section class="dashboard-section">
+    <table class="approval-table">
+      <h2>내 강좌 목록</h2>
+      <thead>
+        <tr>
+          <th>카테고리</th>
+          <th>강좌명</th>
+          <th>승인 상태</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="course : ${courseList}" th:classappend="${course.status?.name()}"
+          th:onclick="|location.href='@{/courses/detail_common(courseId=${course.courseId})}'|" style="cursor:pointer;">
+          <td th:text="${course.title}">스프링 입문</td>
+          <td th:text="${course.category}">백엔드</td>
+          <td th:switch="${course.approvedStatus?.name()}">
+            <span th:case="'PENDING'" class="pending">승인 대기</span>
+            <span th:case="'POSITIVE'" class="approved">승인 완료</span>
+            <span th:case="'NEGATIVE'" class="rejected">반려</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ======================== -->
+  <!-- ② 최근 질문 목록 -->
+  <!-- ======================== -->
+  <section class="dashboard-section">
+    <h2>최근 질문</h2>
+    <table class="qna-table">
+      <thead>
+        <tr>
+          <th>번호</th>
+          <th>강좌명</th>
+          <th>제목</th>
+          <th>작성자</th>
+          <th>작성일</th>
+          <th>조회수</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:if="${#lists.isEmpty(questionList)}">
+          <td colspan="6" style="text-align:center;">등록된 질문이 없습니다.</td>
+        </tr>
+        <tr th:each="q, stat : ${questionList}"
+          th:onclick="|location.href='@{/question/detail(questionId=${q.questionId})}'|" style="cursor: pointer;">
+          <td th:text="${stat.count}"></td>
+          <td th:text="${q.courseName}"></td>
+          <td>
+            <span th:text="${q.title}"></span>
+            <span th:text="'[' + ${q.commentCount} + ']'"></span>
+          </td>
+          <td th:text="${q.memberName}"></td>
+          <td th:text="${#temporals.format(q.createdAt, 'yyyy-MM-dd')}"></td>
+          <td th:text="${q.viewCount}"></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+</body>
+
+</html>

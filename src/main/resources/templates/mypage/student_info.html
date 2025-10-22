@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>내 정보</title>
+  <link rel="stylesheet" th:href="@{/css/student_info.css}">
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+
+<body>
+  <div class="info-container">
+    <header class="top-header">
+      <h1>내 정보</h1>
+    </header>
+
+    <main class="info-main">
+      <h2>내 정보</h2>
+      <form class="info-form">
+        <div class="form-row">
+          <label for="email">이메일</label>    
+          <input type="text" id="email" th:value="${member.email}" readonly>
+        </div>
+
+        <div class="form-row">
+          <label for="name">이름</label>  
+          <input type="text" id="name" th:value="${member.name}" readonly>
+        </div>
+
+        <div class="form-row">
+          <label for="phone">전화번호</label>
+          <div class="phone-inputs">     
+            <input type="text" maxlength="3" th:value="${#strings.substring(member.phone, 0, 3)}" readonly>
+            <span>-</span>
+            <input type="text" maxlength="4" th:value="${#strings.substring(member.phone, 3, 7)}" readonly>
+            <span>-</span>
+            <input type="text" maxlength="4" th:value="${#strings.substring(member.phone, 7)}" readonly>
+          </div>
+        </div>
+      </form>
+    </main>
+  </div>
+</body>
+</html>

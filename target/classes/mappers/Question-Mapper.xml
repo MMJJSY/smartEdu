@@ -1,0 +1,47 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Question-Mapper">
+
+    <!-- 질문 추가 -->
+    <insert id="insertQuestion" parameterType="question" useGeneratedKeys="true"
+        keyProperty="questionId"> insert Into question(course_id, member_id, title, content)
+        values(#{courseId}, #{memberId}, #{title}, #{content}) </insert>
+
+    <!-- 질문 리스트 -->
+    <select id="selectQuestionList" resultType="question"> select q.question_id, q.title,
+        q.view_count, q.created_at, c.title as course_name, m.name as member_name, count(case when
+        cm.status in ('POSTED','EDITED') then cm.comment_id end) as comment_count from question q
+        join courses c on q.course_id = c.course_id join members m on q.member_id = m.member_id left
+        join comments cm on q.question_id =cm.question_id <where> q.status != 'DELETED' <if
+                test="role == 'STUDENT'"> and q.member_id = #{memberId} </if>
+        <if
+                test="role == 'INSTRUCTOR'"> and c.instructor_id = #{memberId} </if>
+        </where>
+        group by q.question_id, q.title, q.view_count, q.created_at, c.title, m.name order by
+        q.created_at desc </select>
+
+    <!-- 상세보기 -->
+    <select id="selectQuestionById" parameterType="int" resultType="question"> select q.question_id,
+        q.course_id, q.member_id, q.title, q.content, q.view_count, q.status, q.created_at,
+        q.updated_at, c.title as course_name, m.name as member_name from question q join courses c
+        on q.course_id = c.course_id join members m on q.member_id = m.member_id where q.question_id
+        = #{questionId} </select>
+
+    <!-- 조회수 증가 -->
+    <update id="updateViewCount" parameterType="int"> update question set view_count = view_count+1
+        where question_id = #{questionId} </update>
+
+    <!-- 수정 -->
+    <update id="updateQuestion" parameterType="question"> update question set course_id=#{courseId},
+        title = #{title}, content= #{content} where question_id = #{questionId} </update>
+
+    <!-- 삭제 -->
+    <update id="deleteQuestion" parameterType="question"> update question set status = 'DELETED'
+        where question_id = #{questionId} </update>
+
+    <select id="selectCourseByStudent" parameterType="int" resultType="course"> select c.course_id,
+        c.title from courses c join payments p on c.course_id = p.course_id where p.student_id =
+        #{studentId} </select>
+
+
+</mapper>

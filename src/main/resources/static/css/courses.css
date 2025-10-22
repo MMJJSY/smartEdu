@@ -1,0 +1,155 @@
+body {
+  margin: 0;
+  font-family: "Pretendard", sans-serif;
+  background-color: #f9fafb;
+  color: #111827;
+}
+
+.wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 40px;
+}
+
+/* ====== 카테고리 탭 ====== */
+.category-tabs {
+  margin: 40px 0 50px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.category-tabs ul {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.category-tabs li a {
+  text-decoration: none;
+  color: #6b7280;
+  font-weight: 600;
+  font-size: 18px;
+  padding-bottom: 8px;
+  display: inline-block;
+  transition: color 0.25s, border-color 0.25s;
+}
+
+.category-tabs li.active a {
+  color: #1E3A8A;
+  border-bottom: 3px solid #3B82F6;
+}
+
+.category-tabs li a:hover {
+  color: #1E3A8A;
+}
+
+/* ====== 강좌 리스트 ====== */
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+}
+
+.course-card {
+  background-color: #ffffff;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+}
+
+.course-card .thumbnail {
+  width: 100%;
+  height: 160px;
+  background-color: #E0E7FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #111827;
+  font-weight: 600;
+}
+
+.course-card .title {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 14px 0 4px;
+  color: #111827;
+}
+
+.course-card .category {
+  display: block;
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 16px;
+}
+
+/* ====== 페이지네이션(인데 나중에 이 부분만 수정할듯 ====== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+  gap: 10px;
+}
+
+.pagination button {
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination button:hover {
+  background-color: #e0e7ff;
+  border-color: #3B82F6;
+  color: #1E3A8A;
+}
+
+.pagination button.active {
+  background-color: #3B82F6;
+  color: white;
+  border-color: #3B82F6;
+}
+
+/* ====== 반응형 ====== */
+@media (max-width: 900px) {
+  .course-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .category-tabs ul {
+    gap: 30px;
+  }
+}
+/* ===== 헤더 높이만큼 본문을 아래로 내리기 ===== */
+:root { --header-h: 120px; }           /* 프로젝트 헤더 높이에 맞게 조정 */
+
+body {
+  padding-top: var(--header-h);        /* 고정 헤더만큼 여백 확보 */
+}
+
+/* ===== 카테고리 탭이 헤더 뒤에 숨지 않게(옵션: 상단 고정) ===== */
+.category-tabs {
+
+  top: var(--header-h);
+  background: #fff;                    /* 헤더/본문과 겹칠 때 내용 가독성 */
+  z-index: 5;                          /* 헤더 다음 레벨로 충분 */
+  padding-top: 8px;                    /* 경계가 너무 붙어 보이면 살짝 여백 */
+  margin-top: 0;                       /* 위쪽 마진이 header 뒤로 들어가는걸 방지 */
+}
+
+/* (선택) 모바일에서 탭이 붙어 보이면 여백 약간 */
+@media (max-width: 900px) {
+  .category-tabs { padding-top: 12px; }
+}

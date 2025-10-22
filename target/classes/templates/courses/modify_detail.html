@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>강좌 수정 요청 상세보기</title>
+    <link rel="stylesheet" th:href="@{/css/admin_dashboard.css}">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #f5f6fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 1.4em;
+        }
+
+        .actions button {
+            margin-left: 8px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-approve {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+        }
+
+        .course-info {
+            line-height: 1.8;
+            margin-top: 20px;
+        }
+
+        .comment-box {
+            background: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .comment-box h3 {
+            margin-top: 0;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .comment-box p {
+            white-space: pre-wrap;
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin-top: 20px;
+            background: #007bff;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .btn-back:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+
+        <div class="header">
+            <h2>강좌 수정 요청 상세보기</h2>
+            <div class="actions">
+                <div class="actions" th:if="${loginUser != null and loginUser.role?.name() == 'ADMIN'}">
+                    <button class="btn-reject" onclick="confirmAction('INACTIVE')">반려</button>
+                    <button class="btn-approve" onclick="confirmAction('ACTIVE')">승인</button>
+                </div>
+            </div>
+        </div>
+
+        <section class="course-info">
+            <p><strong>강좌명:</strong> <span th:text="${course.title}"></span></p>
+            <p><strong>강사명:</strong> <span th:text="${course.instructorName}"></span></p>
+            <p><strong>카테고리:</strong> <span th:text="${course.category}"></span></p>
+            <p><strong>가격:</strong> <span th:text="${course.price} + '원'"></span></p>
+            <p><strong>현재 상태:</strong> <span th:text="${course.modifyStatus}"></span></p>
+        </section>
+
+        <section class="comment-box">
+            <h3>수정 코멘트 내용</h3>
+            <p th:text="${course.modifyComment}">수정 요청 내용이 여기에 표시됩니다.</p>
+        </section>
+
+        <form id="approvalForm" th:action="@{/courses/updateStatus}" method="post">
+            <input type="hidden" name="courseId" th:value="${course.courseId}">
+            <input type="hidden" name="modifyStatus" id="modifyStatusValue">
+        </form>
+
+        <a th:href="@{/courses/modify_list}" class="btn-back">목록으로 돌아가기</a>
+    </main>
+
+    <script>
+        let selectedAction = null;
+
+        function confirmAction(status) {
+            selectedAction = status;
+            const message =
+                status === 'ACTIVE'
+                    ? '정말 승인하시겠습니까?'
+                    : '정말 반려하시겠습니까?';
+            if (confirm(message)) {
+                submitApproval();
+            }
+        }
+
+        function submitApproval() {
+            if (!selectedAction) return;
+            document.getElementById('modifyStatusValue').value = selectedAction;
+            document.getElementById('approvalForm').submit();
+        }
+    </script>
+</body>
+
+</html>

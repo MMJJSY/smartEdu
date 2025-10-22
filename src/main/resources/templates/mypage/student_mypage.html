@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>수강생 마이페이지</title>
+  <link rel="stylesheet"  href=".../static/css/student_mypage.css" th:href="@{/css/student_mypage.css}" />
+</head>
+
+<body>
+  <main class="mypage-container">
+
+    <section class="mypage-content">
+      <div class="recent-courses">
+        <header class="mc-header">
+          <h2 class="mc-title-lg">최근 본 강좌</h2>
+        </header>
+
+
+        
+        <!-- 메인 콘텐츠: 최근 본 강좌만 -->
+        <div class="course-list">
+          <a href="file:///C:/dw/project/smartedu/src/main/resources/templates/student_class_detail.html" class="course-card">
+            <img src="file:///C:/dw/project/smartedu/src/main/resources/static/img/thumbnail.webp" alt="HTML/CSS 웹입문 썸네일">
+            <div class="card-body">
+              <p class="title">HTML/CSS 웹입문</p>
+              <span class="category">웹개발</span>
+            </div>
+          </a>
+
+          <a href="#" class="course-card">
+            <img src="file:///C:/dw/project/smartedu/src/main/resources/static/img/thumbnail.webp" alt="JavaScript 기초 썸네일">
+            <div class="card-body">
+              <p class="title">JavaScript 기초</p>
+              <span class="category">프로그래밍</span>
+            </div>
+          </a>
+
+          <a href="#" class="course-card">
+            <img src="file:///C:/dw/project/smartedu/src/main/resources/static/img/thumbnail.webp" alt="React 완벽 가이드 썸네일">
+            <div class="card-body">
+              <p class="title">React 완벽 가이드</p>
+              <span class="category">프론트엔드</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+
+<script th:if="${msg}">
+  alert('[[${msg}]]');
+</script>
+
+</html>

@@ -1,0 +1,93 @@
+<!-- <th:block th:insert="~{modules/sidebar :: sidebar}" /> -->
+
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Smart Edu - 찜목록</title>
+  <link rel="stylesheet" th:href="@{/modules/header.css}" />
+  <link rel="stylesheet" th:href="@{/css/cart.css}" />
+  <style>
+    /* 플래시 알림(여기서만 표시) */
+    .alert-wrap{position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:9999}
+    .alert{padding:12px 16px;border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.08);font-size:14px}
+    .alert-success{background:#eaf7ee;border:1px solid #bce3c5;color:#157347}
+    .alert-error{background:#fdecea;border:1px solid #f5c2c7;color:#b02a37}
+  </style>
+</head>
+<body>
+  <div id="header"></div>
+
+  <!-- ✅ 결제 성공/오류 플래시 메시지: 카트에서만 노출 -->
+  <div class="alert-wrap" th:if="${msg}">
+    <div class="alert"
+         th:classappend="${msgType} == 'success' ? ' alert-success' : ' alert-error'"
+         th:text="${msg}">알림</div>
+  </div>
+
+  <div class="wrapper">
+    <main class="cart-page">
+      <h2 class="page-title">찜목록</h2>
+
+      <!-- 비었을 때 -->
+      <section class="cart-section" th:if="${#lists.isEmpty(items)}">
+        <div class="cart-item" style="justify-content:center">찜한 강좌가 없습니다.</div>
+      </section>
+
+      <!-- 알림: 카트에서만 표시 -->
+      <div class="alert-wrap" th:if="${msg}">
+        <div class="alert"
+            th:classappend="${msgType} == 'success' ? ' alert-success' : ' alert-error'"
+            th:text="${msg}">알림</div>
+      </div>
+
+      <!-- 목록 -->
+      <section class="cart-section" th:if="${!#lists.isEmpty(items)}">
+        <div th:each="it : ${items}" class="cart-item">
+          <div class="info">
+            <p class="course-title" th:text="${it.courseTitle}">강좌명</p>
+            <span class="category" th:text="${it.courseCategory}">카테고리</span>
+          </div>
+
+          <div class="teacher" th:text="${it.instructorName}">강사</div>
+
+          <div class="price"
+               th:text="${#numbers.formatInteger((it.coursePrice==null?0:it.coursePrice),0,'COMMA') + '원'}">0원</div>
+
+          <!-- ✅ 삭제 버튼: 실제 동작 -->
+          <form th:action="@{/cart/remove}" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="hidden" name="courseId" th:value="${it.courseId}">
+            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit" class="delete-btn">삭제</button>
+          </form>
+        </div>
+
+        <div class="total-box">
+          <div class="total-price">
+            합계 <span th:text="${#numbers.formatInteger((totalPrice==null?0:totalPrice),0,'COMMA') + '원'}">0원</span>
+          </div>
+          <!-- ✅ 전체 결제: 제출 전 JS로 금액 유효성 검증, 성공 시 서버로 POST (플래시 알림은 서버에서 세팅) -->
+          <form id="checkoutForm" th:action="@{/payment/checkout}" method="post">
+            <input type="hidden" th:if="${_csrf != null}"
+                   th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit" class="pay-btn">전체 결제</button>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="footer"></div>
+
+  <script th:src="@{/js/cart.js}"></script>
+  <script>
+    // 플래시 자동 닫힘
+    (function(){
+      var wrap=document.querySelector('.alert-wrap');
+      if(wrap){ setTimeout(function(){ wrap.style.display='none'; }, 3000); }
+    })();
+  </script>
+</body>
+</html>

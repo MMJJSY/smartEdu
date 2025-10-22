@@ -1,0 +1,177 @@
+@charset "utf-8";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+  font-family: "맑은 고딕", "Noto Sans KR", sans-serif;
+}
+
+/* ====== 기본 설정 ====== */
+body {
+  margin: 0;
+  font-family: "Pretendard", sans-serif;
+  background-color: #f9fafb;
+  color: #111827;
+}
+
+main,
+.wrapper {
+  padding-top: var(--header-h);
+  /* 헤더보이게 조정햇슴 */
+}
+
+.wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* ====== 배너 슬라이드 ====== */
+.banner {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  overflow: hidden;
+  margin-bottom: 60px;
+}
+
+
+/*배너 임시 슬라이드*/
+.banner-slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #93C5FD;
+  color: white;
+  font-size: 26px;
+  font-weight: bold;
+  transition: transform 0.8s ease;
+}
+
+/* ====== 점 네비게이션 ====== */
+.dots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+}
+
+
+.dot {
+  width: 10px;
+  height: 10px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.dot.active {
+  background-color: #1E3A8A;
+  transform: scale(1.2);
+}
+
+.dot:hover {
+  background-color: #1E3A8A;
+}
+
+/* ====== 강좌 섹션 공통 ====== */
+section {
+  margin-bottom: 80px;
+}
+
+section h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #001c53;
+  border-left: 3px solid #3B82F6;
+  padding-left: 12px;
+  margin-bottom: 24px;
+}
+
+/* ====== 강좌 카드 리스트 ====== */
+.course-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.course-card {
+  background-color: white;
+  border-radius: 7px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+  text-align: center;
+  padding-bottom: 16px;
+}
+
+.course-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.thumbnail {
+  width: 100%;
+  height: 150px;
+  background: #E0E7FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  font-size: 20px;
+}
+
+.course-card .title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 10px 0 0;
+  color: black;
+}
+
+/* 강좌 카드 썸네일을 균일한 16:9 비율로 표시 */
+.course-card img {
+  display: block;
+  width: 100% !important;
+  /* 인라인 width 덮어씀 */
+  height: auto !important;
+  /* 인라인 height 덮어씀 */
+  aspect-ratio: 16 / 9;
+  /* 비율 고정 */
+  object-fit: cover;
+  /* 꽉 차게, 잘 보이게 */
+  border-radius: 8px;
+  /* 기존 둥근모서리 유지 */
+}
+
+/* 이미지가 없을 때 "썸네일 없음" span을 썸네일처럼 보이게 */
+.course-card>span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  /* 이미지와 동일 비율 */
+  background: #e5e7eb;
+  /* 연한 회색 배경 */
+  color: #6b7280;
+  /* 텍스트 색상 */
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+
+
+/* 여기는 배너이미지추가하면 추가할 부분!
+.banner-slide:nth-child(1) { background-image: url(''); background-size: cover; background-position: center; }
+*/

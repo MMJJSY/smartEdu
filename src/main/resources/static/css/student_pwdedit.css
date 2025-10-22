@@ -1,0 +1,184 @@
+@charset "utf-8";
+
+/* =============== 디자인 토큰 =============== */
+:root{
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --ink: #0f172a;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+
+  --primary: #2563eb;
+  --primary-weak: #eef4ff;
+  --danger: #ef4444;
+  --success: #16a34a;
+
+  --radius: 12px;
+  --shadow: 0 10px 30px rgba(2, 6, 23, .06);
+}
+
+/* =============== 기본 =============== */
+*{ box-sizing: border-box; }
+html, body{ height: 100%; }
+body{
+  margin: 0;
+  font-family: "Noto Sans KR","맑은 고딕", system-ui, -apple-system, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+/* =============== 레이아웃 =============== */
+/* 페이지 가운데 카드 느낌 */
+.pwdedit-container{
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  align-content: start;
+  background: var(--bg);
+}
+
+.pwdedit-header{
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  padding: 22px 24px;
+}
+.pwdedit-header h1{
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #0b1c53;
+  letter-spacing: .2px;
+  padding-left: 12px;
+  border-left: 4px solid #3d86c6;
+}
+
+/* 폼 카드 */
+.pwdedit-section{
+  width: 50%;
+  margin: 36px auto 56px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 24px 32px;
+}
+
+/* =============== 폼 =============== */
+.pwdedit-form{
+  display: grid;
+  gap: 20px;
+}
+
+/* 한 줄: [라벨 140px] [입력 묶음] */
+.form-row{
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 16px;
+  align-items: start;          /* 라벨/입력 상단 정렬 */
+}
+
+.form-row label{
+  margin-top: 10px;            /* 입력과 수평 정렬감 */
+  font-weight: 700;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* 입력 + 힌트 세로 묶음 */
+.input-wrapper{
+  display: grid;
+  gap: 8px;
+  max-width: 420px;
+}
+
+/* 인풋 */
+.input-wrapper input{
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #f8fafc;
+  font-size: 15px;
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+.input-wrapper input:focus{
+  outline: none;
+  background: #fff;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, .12);
+}
+
+/* 유효/오류 상태(선택적으로 class 추가해서 사용) */
+.input-wrapper input.is-valid{
+  border-color: var(--success);
+  box-shadow: 0 0 0 4px rgba(22, 163, 74, .12);
+}
+.input-wrapper input.is-error{
+  border-color: var(--danger);
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, .12);
+}
+
+/* 힌트 및 메시지 */
+.hint,
+#pwMsg{
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+#pwMsg.ok{ color: var(--success); }
+#pwMsg.err{ color: var(--danger); }
+
+/* 액션 영역 */
+.form-actions{
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+/* 버튼 */
+.submit-btn{
+  height: 48px;
+  min-width: 100px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, .25);
+  transition: transform .03s ease, filter .15s ease, box-shadow .2s ease;
+}
+.submit-btn:hover{ filter: brightness(.98); }
+.submit-btn:active{ transform: translateY(1px); }
+.submit-btn:disabled{
+  opacity: .6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* 로딩(선택) */
+.submit-btn[aria-busy="true"]{
+  position: relative; pointer-events: none; opacity: .95;
+}
+.submit-btn[aria-busy="true"]::after{
+  content: "";
+  position: absolute; right: 14px; top: 50%;
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,.9);
+  border-top-color: transparent;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  animation: spin .85s linear infinite;
+}
+@keyframes spin{ to{ transform: translateY(-50%) rotate(1turn); } }
+
+/* =============== 반응형 =============== */
+@media (max-width: 640px){
+  .pwdedit-section{ margin: 20px 14px 40px; padding: 22px 16px; }
+  .form-row{ grid-template-columns: 1fr; }
+  .form-row label{ margin-top: 0; }
+  .form-actions{ justify-content: stretch; }
+  .submit-btn{ width: 100%; }
+}

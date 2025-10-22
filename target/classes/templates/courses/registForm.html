@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>새 강좌 신청</title>
+  <!-- 수정 폼과 동일 CSS 재사용 -->
+  <link rel="stylesheet" th:href="@{/css/courses_modify.css}">
+  <style>
+    /* 강사명: 보이기만 하고 클릭/포커스 불가 */
+    .readonly-display {
+      background: #f7f7f7;
+      color: #333;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .file-name {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: .875rem;
+      color: #666;
+      word-break: break-all;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="course-request">
+    <h2>새 강좌 신청</h2>
+
+    <form th:action="@{/courses/regist}" method="post" enctype="multipart/form-data" id="courseForm" novalidate>
+      <div class="course-info">
+        <label for="title">제목</label>
+        <input id="title" type="text" name="title" required>
+
+        <label for="description">강좌 소개글</label>
+        <textarea id="description" name="description" rows="3" required></textarea>
+
+        <div class="info-row">
+          <div>
+            <label for="category">카테고리</label>
+            <select id="category" name="category" required>
+              <option value="">선택</option>
+              <option value="BACKEND">백엔드</option>
+              <option value="FRONTEND">프론트엔드</option>
+              <option value="DATABASE">데이터베이스</option>
+            </select>
+          </div>
+          <div>
+            <label for="price">가격 (원)</label>
+            <input id="price" type="number" name="price" min="0" step="1000" required placeholder="예) 10000">
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div>
+            <label for="instructorName">강사 이름</label>
+            <input id="instructorName" type="text" class="readonly-display" aria-readonly="true" tabindex="-1"
+              onfocus="this.blur()" name="instructorName" readonly th:value="${loginUser.name}">
+            <input type="hidden" name="instructorId" th:value="${loginUser.memberId}">
+          </div>
+          <div>
+            <label for="img">썸네일 이미지 첨부</label>
+            <input id="img" type="file" name="img" accept="image/*">
+            <div id="thumbFileName" class="file-name"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- 강의 등록 영역: 수정 폼과 동일 패턴(추가/삭제 시 인덱스 재정렬) -->
+      <section class="lecture-section">
+        <h3>강의 등록</h3>
+        <table id="lectureTable">
+          <thead>
+            <tr>
+              <th>회차</th>
+              <th>강의명</th>
+              <th>영상 첨부</th>
+              <th>삭제</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <button type="button" class="btn-add" onclick="addLecture()">+ 회차 추가하기</button>
+      </section>
+
+      <div class="submit-box">
+        <button type="submit" class="btn-submit">강좌 승인 요청</button>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    // ---------- 공통 유틸 ----------
+    function nextIdx() {
+      return document.querySelectorAll("#lectureTable tbody tr").length;
+    }
+
+    function renumberRows() {
+      const rows = document.querySelectorAll("#lectureTable tbody tr");
+      rows.forEach((row, i) => {
+        // name 속성 인덱스 보정
+        row.querySelectorAll("[name^='lectures[']").forEach(input => {
+          input.name = input.name.replace(/lectures\[\d+\]/, `lectures[${i}]`);
+        });
+        // 회차 텍스트/값 보정
+        const thSpan = row.querySelector("td > span");
+        if (thSpan) thSpan.textContent = `${i + 1}강`;
+        const sectionHidden = row.querySelector(`input[name='lectures[${i}].sectionNo']`);
+        if (sectionHidden) sectionHidden.value = i + 1;
+      });
+    }
+
+    // ---------- 행 추가 ----------
+    function addLecture() {
+      const tbody = document.querySelector("#lectureTable tbody");
+      const idx = nextIdx();
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>
+          <span>${idx + 1}강</span>
+          <input type="hidden" name="lectures[${idx}].sectionNo" value="${idx + 1}">
+        </td>
+        <td>
+          <input type="text" name="lectures[${idx}].title" placeholder="강의명 입력" required>
+        </td>
+        <td>
+          <input type="file" name="lectures[${idx}].video" accept="video/mp4,video/*" required>
+          <div class="file-name"></div>
+        </td>
+        <td><button type="button" class="btn-delete" onclick="deleteLecture(this)">삭제</button></td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    // ---------- 행 삭제(수정폼과 동일: 삭제 후 인덱스 재정렬) ----------
+    function deleteLecture(btn) {
+      btn.closest("tr").remove();
+      renumberRows();
+    }
+
+    // ---------- 파일 선택 시 파일명 표시(썸네일 + 각 강의) ----------
+    document.addEventListener("change", function (e) {
+      const target = e.target;
+      if (target.matches("input[type='file'][name='img']")) {
+        const box = document.getElementById("thumbFileName");
+        box.textContent = target.files && target.files[0] ? target.files[0].name : "";
+      }
+      if (target.matches("#lectureTable input[type='file'][name$='.video']")) {
+        const holder = target.closest("td").querySelector(".file-name");
+        holder.textContent = target.files && target.files[0] ? target.files[0].name : "";
+      }
+    });
+
+    // ---------- 숫자 필드 보정 ----------
+    document.getElementById('price').addEventListener('change', function () {
+      const v = Number(this.value || 0);
+      if (v < 0) this.value = 0;
+    });
+
+    // ---------- 제출 전 검증 + 최종 인덱스 보정 ----------
+    document.getElementById("courseForm").addEventListener("submit", function (e) {
+      // 인덱스 보정(혹시 모를 어긋남 방지)
+      renumberRows();
+
+      // 필수값 검증(수정 폼과 동일 UX)
+      const title = document.getElementById('title');
+      if (!title.value.trim()) {
+        e.preventDefault(); alert("제목을 작성해 주세요"); title.focus(); return;
+      }
+      const description = document.getElementById('description');
+      if (!description.value.trim()) {
+        e.preventDefault(); alert("강좌 소개글을 작성해 주세요"); description.focus(); return;
+      }
+      const category = document.getElementById('category');
+      if (!category.value) {
+        e.preventDefault(); alert("카테고리를 선택해 주세요"); category.focus(); return;
+      }
+      const price = document.getElementById('price');
+      const priceVal = Number(price.value);
+      if (!price.value || isNaN(priceVal)) {
+        e.preventDefault(); alert("가격을 작성해 주세요"); price.focus(); return;
+      }
+      if (priceVal < 0 || priceVal % 1000 !== 0) {
+        e.preventDefault(); alert("가격은 1,000원 단위로 입력해 주세요"); price.focus(); return;
+      }
+
+      const rows = document.querySelectorAll("#lectureTable tbody tr");
+      if (rows.length === 0) {
+        e.preventDefault(); alert("강의를 1개 이상 등록해주세요."); return;
+      }
+
+      const titles = document.querySelectorAll('#lectureTable tbody input[type="text"][name$=".title"]');
+      for (let i = 0; i < titles.length; i++) {
+        if (!titles[i].value.trim()) {
+          e.preventDefault(); alert(`(${i + 1}강) 강의명을 작성해 주세요`); titles[i].focus(); return;
+        }
+      }
+
+      const videos = document.querySelectorAll('#lectureTable tbody input[type="file"][name$=".video"]');
+      for (let i = 0; i < videos.length; i++) {
+        if (!videos[i].files || videos[i].files.length === 0) {
+          e.preventDefault(); alert(`(${i + 1}강) 강의 영상을 업로드해주세요.`); videos[i].click(); return;
+        }
+      }
+
+      if (!confirm("정말 요청하시겠습니까?")) {
+        e.preventDefault();
+      }
+    });
+
+    // 페이지 진입 시 기본 1개 행 만들어 두고 시작하고 싶다면 ↓ 주석 해제
+    // window.addEventListener('DOMContentLoaded', () => addLecture());
+  </script>
+</body>
+
+</html>

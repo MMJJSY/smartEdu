@@ -1,0 +1,32 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>로그인 - Smart Edu</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+
+<body>
+    <div class="login-container">
+
+        <form th:action="@{/common/login}" method="post" class="login-box">
+            <div class="user-type">
+                <label><input type="radio" name="role" value="student" checked> 수강생</label>
+                <label><input type="radio" name="role" value="instructor"> 강사/원장</label>
+            </div>
+
+            <input type="email" name="email" id="email" placeholder="이메일" required>
+            <input type="password" name="pwd" id="password" placeholder="비밀번호" required>
+            <input type="hidden" name="retUrl" th:value="${retUrl}">
+            <button type="submit" id="loginBtn">로그인</button>
+        </form>
+        <button class="register-btn" th:onclick="|location.href='@{/member/registForm}'|">가입하기</button>
+    </div>
+
+    <script th:src="@{/js/login.js}"></script>
+
+    <div id="toast" th:if="${msg}" th:text="${msg}" th:data-type="${msgType != null ? msgType : 'error'}"
+        class="toast hidden"></div>
+</body>
+
+</html>

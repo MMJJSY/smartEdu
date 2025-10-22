@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입 선택 - Smart Edu</title>
+    <link rel="stylesheet" th:href="@{/css/register.css}">
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-select">
+            <button onclick="location.href='/member/registForm/student'">수강생</button>
+            <button onclick="location.href='/member/registForm/instructor'">강사</button>
+        </div>
+    </div>
+    <script th:src="@{/js/register.js}"></script>
+</body>
+</html>

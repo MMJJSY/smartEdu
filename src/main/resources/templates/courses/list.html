@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Edu - 전체 강좌</title>
+  <link rel="stylesheet" th:href="@{/css/courses.css}">
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"/>
+  <link rel="stylesheet" th:href="@{/bootstrap/dist/css/adminlte.min.css}">
+  <style>
+    /* 썸네일 기본 스타일 (필요 시 조정) */
+    .course-grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap:16px; }
+    .course-card { background:#fff; border:1px solid #eee; border-radius:8px; padding:12px; cursor:pointer; }
+    .thumbnail { width:100%; aspect-ratio:16/9; background:#f3f3f3; border-radius:6px; overflow:hidden; }
+    .thumbnail img { width:100%; height:100%; object-fit:cover; display:block; }
+    .title { margin:10px 0 4px; font-weight:700; }
+    .category { font-size:12px; color:#666; }
+  </style>
+</head>
+<body>
+  <th:block th:insert="~{modules/header.html}" />
+
+  <div class="wrapper">
+    <main class="courses-page">
+      <!-- 카테고리 메뉴 -->
+      <nav class="category-tabs">
+        <ul>
+          <li th:classappend="${selectedCategory == null} ? 'active'">
+            <a th:href="@{/courses/list}">전체</a>
+          </li>
+          <li th:classappend="${selectedCategory == 'FRONTEND'} ? 'active'">
+            <a th:href="@{/courses/list(category='FRONTEND')}">프론트엔드</a>
+          </li>
+          <li th:classappend="${selectedCategory == 'BACKEND'} ? 'active'">
+            <a th:href="@{/courses/list(category='BACKEND')}">백엔드</a>
+          </li>
+          <li th:classappend="${selectedCategory == 'DATABASE'} ? 'active'">
+            <a th:href="@{/courses/list(category='DATABASE')}">데이터베이스</a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- 강좌 목록 -->
+      <section class="course-list-section">
+        <div class="course-grid">
+          <div class="course-card"
+               th:each="course : ${courseList}"
+               th:onclick="|location.href='@{/courses/detail(courseId=${course.courseId})}'|">
+
+            <!-- ✅ 썸네일: 실제 이미지로 렌더링 -->
+            <div class="thumbnail">
+              <img th:if="${course.img != null}"
+                   th:src="@{'/upload/course/' + ${course.img}}"
+                   alt="썸네일">
+              <img th:if="${course.img == null}"
+                   th:src="@{/images/no-thumb.png}"
+                   alt="썸네일 없음">
+            </div>
+
+            <p class="title" th:text="${course.title}">강좌제목</p>
+            <span class="category" th:text="${course.category}">카테고리</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 페이지네이션 -->
+      <div class="card-footer">
+        <th:block th:insert="~{modules/paging.html}" />
+      </div>
+    </main>
+  </div>
+
+  <th:block th:insert="~{modules/footer.html}" />
+  <th:block th:insert="~{modules/common_js.html}" />
+</body>
+</html>

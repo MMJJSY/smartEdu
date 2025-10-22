@@ -1,0 +1,432 @@
+/* =========================================
+   Admin Common List — Clean Blue Theme
+   (HTML 구조/클래스 100% 호환)
+   ========================================= */
+
+/* 색 변수 */
+:root {
+  --brand-50: #eef4ff;
+  --brand-100: #e6edff;
+  --brand-200: #cfe0ff;
+  --brand-300: #9fbafc;
+  --brand-400: #6287ef;
+  --brand-500: #2d6cdf;
+  /* 포인트 */
+  --brand-600: #2157c7;
+  --text-strong: #1f2a44;
+  --text: #334155;
+  --muted: #8aa0c8;
+  --border: #e6eaf2;
+  --bg: #f6f8fc;
+  --white: #fff;
+}
+
+/* 전체 배경/타이포 */
+body {
+  font-family: 'Noto Sans KR', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  margin: 0;
+  background: linear-gradient(180deg, #f9fbff, var(--bg));
+  color: var(--text);
+}
+
+/* 메인 카드 컨테이너 */
+.admin-dashboard {
+  padding: 28px clamp(16px, 3.5vw, 36px);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* 페이지 제목 */
+.admin-dashboard>h2 {
+  margin: 0 0 18px;
+  font-size: clamp(20px, 2.3vw, 28px);
+  font-weight: 800;
+  color: var(--text-strong);
+  letter-spacing: .015em;
+}
+
+/* =============== 필터 박스 =============== */
+.filter-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(45, 108, 223, .06);
+  margin-bottom: 16px;
+}
+
+.filter-box form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-box label {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.filter-box select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+
+  padding: 10px 36px 10px 12px;
+  border: 1px solid var(--brand-200);
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, var(--brand-50), var(--brand-100)),
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="9" viewBox="0 0 24 24" fill="none" stroke="%232157c7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>') no-repeat right 10px center/14px;
+  color: var(--text-strong);
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color .18s ease, box-shadow .18s ease, transform .08s ease;
+}
+
+.filter-box select:hover {
+  border-color: var(--brand-300);
+  box-shadow: 0 6px 20px rgba(45, 108, 223, .10);
+}
+
+.filter-box select:active {
+  transform: translateY(1px);
+}
+
+/* 강사 전용 버튼 */
+.btn-create {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, var(--brand-500), var(--brand-600));
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  box-shadow: 0 6px 18px rgba(45, 108, 223, .25);
+  cursor: pointer;
+  transition: transform .08s ease, box-shadow .18s ease, filter .18s ease;
+}
+
+.btn-create:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 8px 22px rgba(45, 108, 223, .28);
+}
+
+.btn-create:active {
+  transform: translateY(1px);
+}
+
+/* =============== 테이블 카드 =============== */
+.approval-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  /* radius 적용 */
+  box-shadow: 0 8px 28px rgba(22, 48, 103, .08);
+}
+
+/* 헤더 */
+.approval-table thead th {
+  background: linear-gradient(180deg, var(--brand-500), var(--brand-600));
+  color: #fff;
+  padding: 14px 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, .2);
+}
+
+/* 셀 */
+.approval-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  font-size: 14px;
+}
+
+/* 행 hover */
+.approval-table tbody tr {
+  transition: background .15s ease, box-shadow .15s ease, transform .08s ease;
+}
+
+.approval-table tbody tr:hover {
+  background: linear-gradient(180deg, var(--brand-50), var(--brand-100));
+}
+
+/* 첫/마지막 열 좌/우 정렬 가독성 */
+.approval-table td:first-child {
+  text-align: left;
+  padding-left: 18px;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.approval-table th:first-child {
+  text-align: left;
+  padding-left: 18px;
+}
+
+/* 빈 데이터 */
+.approval-table tbody tr td[colspan] {
+  padding: 28px 12px;
+  color: #9aa6c7;
+  font-weight: 600;
+}
+
+/* =============== 상태 배지 =============== */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  border: 1px solid transparent;
+  background: #eff2f6;
+  color: #64748b;
+}
+
+.status.pending {
+  background: #fff6ed;
+  color: #b45309;
+  border-color: #fde1c6;
+}
+
+.status.active {
+  /* 승인 or 개강 */
+  background: #ecfdf5;
+  color: #047857;
+  border-color: #c6f6e2;
+}
+
+.status.inactive {
+  /* 반려 or 종강 */
+  background: #fef2f2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+/* =============== 강사 승인 카드 (관리자 대시보드에서 사용) =============== */
+.instructor-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  margin: 18px 0 24px;
+}
+
+.instructor-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 14px;
+  text-align: center;
+  box-shadow: 0 6px 22px rgba(22, 48, 103, .06);
+  transition: transform .12s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.instructor-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--brand-300);
+  box-shadow: 0 10px 28px rgba(22, 48, 103, .10);
+}
+
+.instructor-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-strong);
+  margin: 4px 0 8px;
+}
+
+.instructor-card .status {
+  margin-top: 4px;
+}
+
+/* =============== 반응형 =============== */
+@media (max-width: 860px) {
+  .filter-box {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-create {
+    width: 100%;
+  }
+
+  .approval-table th,
+  .approval-table td {
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+}
+
+/* =============== 접근성 포커스 =============== */
+.approval-table a:focus-visible,
+.btn-create:focus-visible,
+select:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 3px rgba(45, 108, 223, .25),
+    0 6px 18px rgba(45, 108, 223, .20);
+  border-color: var(--brand-500);
+}
+
+/* =============== 다크모드 =============== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1420;
+    --white: #101828;
+    --text: #d6e1ff;
+    --text-strong: #eff4ff;
+    --border: #20304a;
+  }
+
+  .filter-box,
+  .approval-table,
+  .instructor-card {
+    background: var(--white);
+    border-color: var(--border);
+  }
+
+  .approval-table thead th {
+    border-bottom-color: rgba(255, 255, 255, .18);
+  }
+
+  .approval-table tbody tr:hover {
+    background: linear-gradient(180deg, #111a2a, #0f1a2c);
+  }
+
+  .status {
+    background: #1b2536;
+    color: #c4d5ff;
+    border-color: #2a3b59;
+  }
+
+  .status.pending {
+    background: #2b1f12;
+    color: #f2c99b;
+    border-color: #47321b;
+  }
+
+  .status.active {
+    background: #0f2b23;
+    color: #65e1b2;
+    border-color: #1b4e3f;
+  }
+
+  .status.inactive {
+    background: #331a1a;
+    color: #ff9a9a;
+    border-color: #502828;
+  }
+}
+
+/* 카드 그리드 (4개 한 줄) */
+.instructor-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin: 12px 0 10px;
+}
+
+@media (max-width:1100px) {
+  .instructor-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width:820px) {
+  .instructor-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width:520px) {
+  .instructor-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 개별 카드 */
+.instructor-card {
+  background: #fff;
+  border: 1px solid #e6eaf2;
+  border-radius: 14px;
+  padding: 18px 16px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(22, 48, 103, .08);
+  transition: transform .12s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.instructor-card:hover {
+  transform: translateY(-2px);
+  border-color: #9fbafc;
+  box-shadow: 0 12px 32px rgba(22, 48, 103, .12);
+}
+
+.instructor-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1f2a44;
+  margin: 2px 0 10px;
+}
+
+.status.pending {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .02em;
+  background: #fff6ed;
+  border: 1px solid #fde1c6;
+  color: #c2410c;
+}
+
+.date {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #7a8aa8;
+}
+
+/* 더보기 버튼 */
+.more-box {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.btn-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  color: #2157c7;
+  text-decoration: none;
+  background: linear-gradient(180deg, #eef4ff, #e6edff);
+  border: 1px solid #cfe0ff;
+  border-radius: 10px;
+  box-shadow: 0 1px 0 rgba(16, 24, 40, .04);
+  transition: background .18s ease, box-shadow .18s ease, transform .12s ease;
+}
+
+.btn-more:hover {
+  background: linear-gradient(180deg, #e6edff, #d8e5ff);
+  box-shadow: 0 6px 18px rgba(45, 108, 223, .18);
+  transform: translateY(-1px);
+}

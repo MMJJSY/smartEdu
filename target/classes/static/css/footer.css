@@ -1,0 +1,42 @@
+@charset "utf-8";
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  font-family: "맑은 고딕";
+}
+ul, ol {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+}
+
+
+footer {
+  width: 100%;
+  height: 200px;
+  background-color: #0b4375;
+  color: #E0E7FF;
+
+  position: relative;
+  text-align: center;
+  padding: 45px 0;
+  font-size: 15px;
+  line-height: 1.8;
+  border-top: 3px solid #3d86c6;
+  border-bottom: 3px solid #3d86c6;
+  overflow: hidden;
+}
+.footer-inner{
+  width: 1180px;
+  margin: 0 auto;
+}
+
+.footer-inner p {
+  margin: 5px auto;
+}
+
+.footer-inner p:nth-child(2) {
+  color: #93C5FD;
+}

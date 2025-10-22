@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>비밀번호 확인</title>
+  <link rel="stylesheet" href="/css/student_pwdcheck.css">
+</head>
+
+<body>
+  <main class="mypage-container">
+    <div class="pwcheck-container">
+      <header class="pwcheck-header">
+        <h1>비밀번호 확인</h1>
+      </header>
+
+      <main class="pwcheck-main">
+        <form class="pwcheck-form" th:action="@{/mypage/pwdcheck}" method="post">
+          <div class="input-group">
+            <label for="oldPwd">현재 비밀번호</label>
+            <input type="password" id="password" name="pwd" placeholder="비밀번호를 입력해주세요">
+            <button type="submit">확인</button>
+          </div>
+        </form>
+      </main>
+    </div>
+
+    <script th:if="${msg}">
+      alert('[[${msg}]]');
+    </script>
+</body>
+
+
+
+</html>

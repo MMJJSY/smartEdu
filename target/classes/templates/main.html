@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SmartEdu 메인</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+
+<body>
+    <th:block th:insert="~{modules/header}" />
+
+    <div class="wrapper">
+        <main>
+            <!-- 슬라이드 배너 -->
+            <section class="banner">
+                <div class="banner-slide">배너 이미지</div>
+                <div class="banner-slide">배너 이미지2</div>
+                <div class="banner-slide">배너 이미지3</div>
+            </section>
+
+            <!-- 🔥 인기 강좌 -->
+            <section class="recommended">
+                <h2>🔥 인기 강좌</h2>
+                <div class="course-list">
+                    <div class="course-card" th:each="course : ${popularCourses}">
+                        <img th:if="${course.img}" th:src="@{'/upload/course/' + ${course.img}}" alt="썸네일"
+                    style="width:100%;height:100%;object-fit:cover;border-radius:8px;" th:onclick="|location.href='@{/courses/detail(courseId=${course.courseId})}'|">
+                <span th:if="${course.img == null}">썸네일 없음</span>
+                        <p class="title" th:text="${course.title}"></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 🆕 최신 강좌 -->
+            <section class="latest">
+                <h2>🆕 최신 강좌</h2>
+                <div class="course-list">
+                    <div class="course-card" th:each="course : ${latestCourses}">
+                        <img th:if="${course.img}" th:src="@{'/upload/course/' + ${course.img}}" alt="썸네일"
+                    style="width:100%;height:100%;object-fit:cover;border-radius:8px;" th:onclick="|location.href='@{/courses/detail(courseId=${course.courseId})}'|">
+                <span th:if="${course.img == null}">썸네일 없음</span>
+                        <p class="title" th:text="${course.title}"></p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <th:block th:insert="~{modules/footer}" />
+
+    <script th:src="@{/js/main.js}" defer></script>
+</body>
+
+</html>

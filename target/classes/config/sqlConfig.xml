@@ -1,0 +1,28 @@
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+
+    <typeAliases>
+        <typeAlias type="java.lang.String" alias="str"/>
+        <typeAlias type="java.lang.Integer" alias="int"/>
+        <typeAlias type="com.application.smartEdu.dto.CoursesVO" alias="course"/>
+        <typeAlias type="com.application.smartEdu.dto.LecturesVO" alias="lecture"/>
+        <typeAlias type="com.application.smartEdu.command.PageMaker" alias="pageMaker"/>
+        <typeAlias type="com.application.smartEdu.dto.MemberVO" alias="member"/>
+        <typeAlias type="com.application.smartEdu.dto.InstructorVO" alias="instructor"/>
+        <typeAlias type="com.application.smartEdu.dto.PaymentVO" alias="payment"/>
+        <typeAlias type="com.application.smartEdu.dto.CartsVO" alias="carts"/>
+        <typeAlias type="com.application.smartEdu.dto.CartItemWithCourseVO" alias="cartItem"/>
+        <typeAlias type="com.application.smartEdu.dto.PaymentItemWithCourseVO" alias="paymentItem"/>
+        <typeAlias type="com.application.smartEdu.dto.ReviewVO" alias="review" />
+        <typeAlias type="com.application.smartEdu.dto.QuestionVO" alias="question" />
+        <typeAlias type="com.application.smartEdu.dto.CommentVO" alias="comment" />
+    </typeAliases>
+
+</configuration>

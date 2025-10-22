@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>질문 상세보기</title>
+  <link rel="stylesheet" th:href="@{/css/qna.css}">
+  <script th:src="@{/js/qna.js}"></script>
+</head>
+
+<body>
+  <header id="header"></header>
+
+  <div class="content-wrapper">
+    <aside id="sidebar"></aside>
+
+    <main class="qna-container">
+      <div class="qna-header">
+        <h2 th:text="${question.title}">질문제목</h2>
+        <div class="qna-meta">
+          <p>
+            <strong>강좌명:</strong>
+            <span th:text="${question.courseName}"></span>
+          </p>
+          <p>
+            작성자 <span th:text="${question.memberName}"></span>
+            <span th:text="${#temporals.format(question.createdAt, 'yyyy-MM-dd')}"></span>
+          </p>
+        </div>
+        <div class="btn-right">
+          <button class="modify-btn">수정</button>
+          <button class="delete-btn">삭제</button>
+        </div>
+      </div>
+
+      <div class="qna-content" th:utext="${question.content}">
+      </div>
+
+      <hr>
+
+      <section class="comments" th:object="${question}">
+        <h3>댓글</h3>
+
+        <div th:each="comment : ${commentList}" th:classappend="${comment.parentId != null} ? 'reply' : 'comment'">
+
+          <p class="comment-info">
+            <span th:text="${comment.memberName}">작성자</span>
+            <span th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd')}">날짜</span>
+          </p>
+
+
+          <p class="comment-text" th:if="${comment.status == 'DELETED' or comment.content == null}">
+            <em class="deleted-comment">삭제된 댓글입니다.</em>
+          </p>
+          <p class="comment-text" th:unless="${comment.status == 'DELETED' or comment.content == null}"
+            th:text="${comment.content}">
+            댓글 내용
+          </p>
+
+
+          <div class="comment-actions" th:if="${'DELETED' ne comment.status}">
+            <button class="reply-toggle">답글쓰기</button>
+            <button class="delete-btn" th:data-comment-id="${comment.commentId}">삭제</button>
+            <button class="modify-btn" th:data-comment-id="${comment.commentId}">수정</button>
+          </div>
+
+          <div class="reply-box hidden" th:if="${'DELETED' ne comment.status}">
+            <textarea placeholder="답글을 입력하세요"></textarea>
+            <button class="reply-submit" th:data-parent-id="${comment.commentId}">등록</button>
+          </div>
+
+        </div>
+
+
+        <div class="comment-form">
+          <textarea id="new-comment" placeholder="댓글을 남겨보세요."></textarea>
+          <button class="comment-submit" th:data-question-id="${question.questionId}">등록</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+</body>
+
+</html>
