@@ -154,16 +154,48 @@
       document.getElementById('approvalForm').submit();
     }
 
-    // ✅ 관리자 수정 요청 팝업
+   // ✅ 관리자 수정 요청 팝업 → /courses/requestModify 로 직접 전송
     function openModifyRequest() {
       const comment = prompt("강사에게 전달할 수정 요청 내용을 입력하세요.");
-      if (!comment) return;
+      if (comment === null) return;                 // 취소
+      if (!comment.trim()) {                        // 빈 문자열 방지
+        alert("요청 내용을 입력해주세요.");
+        return;
+      }
 
-      document.getElementById('statusField').value = 'modifyStatus';
-      document.getElementById('statusValue').value = 'REQUEST'; 
-      document.getElementById('modifyComment').value = comment;
+      // 페이지에 이미 있는 값들 가져오기
+      const courseId = document.querySelector('input[name="courseId"]')?.value;
+      const role = document.querySelector('input[name="role"]')?.value;
+      const filterType = document.querySelector('input[name="filterType"]')?.value;
+      const filter = document.querySelector('input[name="filter"]')?.value;
 
-      document.getElementById('approvalForm').submit();
+      // 전송 폼 동적 생성
+      const form = document.createElement('form');
+      form.method = 'post';
+      form.action = '/courses/requestModify';
+
+      // hidden inputs
+      const add = (name, value) => {
+        const i = document.createElement('input');
+        i.type = 'hidden';
+        i.name = name;
+        i.value = value ?? '';
+        form.appendChild(i);
+      };
+
+      add('courseId', courseId);
+      add('comment', comment);      // ⚠️ 컨트롤러 파라미터명은 comment 입니다.
+      add('role', role);
+      add('filterType', filterType);
+      add('filter', filter);
+
+      // ✅ Spring Security CSRF 사용 시 토큰 포함 (메타태그 기반)
+      const csrfParam = document.querySelector('meta[name="_csrf_parameter"]')?.content;
+      const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+      if (csrfParam && csrfToken) add(csrfParam, csrfToken);
+
+      document.body.appendChild(form);
+      form.submit();
     }
   </script>
 

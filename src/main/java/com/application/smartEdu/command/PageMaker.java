@@ -25,6 +25,9 @@ public class PageMaker {
 
     private int displayPageNum = 4;
 
+    // ✅ 추가: 수정요청 강좌 제외 여부
+    private Boolean excludeModifyRequests = false;
+
     public int getStartRow() {
         return (this.page - 1) * this.perPageNum;
     }
@@ -43,15 +46,12 @@ public class PageMaker {
             endPage = realEndPage;
         }
 
-        prev = startPage == 1 ? false : true;
-        next = endPage < realEndPage ? true : false;
-
+        prev = startPage != 1;
+        next = endPage < realEndPage;
     }
 
     public void setTotalCount(int totalCount) {
         this.totalCount = totalCount;
-
         calcData();
     }
-
 }

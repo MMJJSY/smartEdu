@@ -145,17 +145,17 @@ public class CourseListController {
         if (instructorId != null) {
             // ===== 강사 분기 =====
             if ("modify".equalsIgnoreCase(filterType)) {
-                // 수정요청 목록: 내 강좌 중 modify_status != null (옵션 필터: PENDING/ACTIVE/INACTIVE)
+                // 수정요청 목록: 내 강좌 중 modify_status != null
                 List<CoursesVO> allMine = courseService.findByInstructorAndStatus(instructorId, null);
                 courseList = allMine.stream()
                         .filter(c -> c.getModifyStatus() != null)
-                        .collect(java.util.stream.Collectors.toList());
+                        .collect(Collectors.toList());
 
                 if (filter != null && !filter.isBlank()) {
                     courseList = courseList.stream()
                             .filter(c -> c.getModifyStatus() != null
                                     && c.getModifyStatus().name().equalsIgnoreCase(filter))
-                            .collect(java.util.stream.Collectors.toList());
+                            .collect(Collectors.toList());
                 }
 
                 totalCount = courseList.size();
@@ -165,14 +165,14 @@ public class CourseListController {
                 courseList = (start < end) ? courseList.subList(start, end) : List.of();
 
             } else if ("instructor".equalsIgnoreCase(filterType)) {
-                // 내강좌: 승인상태(Status)로 필터링
+                // 내강좌 목록: 상태별 필터
                 List<CoursesVO> allMine = courseService.findByInstructorAndStatus(instructorId, null);
 
                 if (filter != null && !filter.isBlank()) {
                     allMine = allMine.stream()
                             .filter(c -> c.getStatus() != null
                                     && c.getStatus().name().equalsIgnoreCase(filter))
-                            .collect(java.util.stream.Collectors.toList());
+                            .collect(Collectors.toList());
                 }
 
                 totalCount = allMine.size();
@@ -182,7 +182,6 @@ public class CourseListController {
                 courseList = (start < end) ? allMine.subList(start, end) : List.of();
 
             } else {
-                // status/approved 등 기존 로직: status로만 DAO 필터
                 String statusForDao = "status".equalsIgnoreCase(filterType)
                         ? (filter == null || filter.isBlank() ? null : filter)
                         : null;
@@ -196,7 +195,12 @@ public class CourseListController {
                 courseList = (start < end) ? courseList.subList(start, end) : List.of();
             }
         } else {
-            // ===== 관리자/기타 분기 =====
+            // ===== 관리자/원장 분기 =====
+            if ("status".equalsIgnoreCase(filterType)) {
+                // ✅ 강좌 목록에서는 수정요청 중(REQUEST, PENDING) 강좌 제외
+                pageMaker.setExcludeModifyRequests(true);
+            }
+
             courseList = courseService.list(pageMaker);
             totalCount = courseService.countCoursesList(pageMaker);
             pageMaker.setTotalCount(totalCount);
@@ -218,7 +222,6 @@ public class CourseListController {
             }
             case "modify" -> {
                 pageTitle = "강좌 수정 요청 목록";
-                // ✅ REQUEST(관리자 요청) 추가
                 filterOptions = List.of(
                         Map.of("value", "REQUEST", "label", "관리자 요청"),
                         Map.of("value", "PENDING", "label", "대기중"),
@@ -292,15 +295,24 @@ public class CourseListController {
 
         CoursesVO course = new CoursesVO();
         course.setCourseId(courseId);
-        course.setModifyStatus(CourseModifyStatus.REQUEST); // 수정 요청 상태로 변경
+
+        // 수정 요청 상태로 변경
+        course.setModifyStatus(CourseModifyStatus.REQUEST);
+
+        // ✅ 수정 요청 시 강좌 전체 상태를 '대기(PENDING)'로 변경
+        course.setStatus(CoursePendingStatus.PENDING);
+
+        // 수정 사유 저장
         course.setModifyComment(comment);
 
+        // DB 반영
         courseService.modify(course);
 
         String redirectUrl = String.format(
                 "redirect:/courses/list_common?role=%s&filterType=%s%s",
                 role, filterType,
                 (filter != null && !filter.isBlank()) ? "&filter=" + filter : "");
+
         return redirectUrl;
     }
 
