@@ -32,9 +32,8 @@ main,
 .banner {
   position: relative;
   width: 100%;
-  height: 500px;
+  height: 350px;
   overflow: hidden;
-  margin-bottom: 60px;
 }
 
 
@@ -67,21 +66,21 @@ main,
 
 
 .dot {
-  width: 10px;
-  height: 10px;
-  background-color: rgba(255, 255, 255, 0.5);
+  width: 11px;
+  height: 11px;
+  background-color: rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .dot.active {
-  background-color: #1E3A8A;
+  background-color: #999999;
   transform: scale(1.2);
 }
 
 .dot:hover {
-  background-color: #1E3A8A;
+  background-color: #999999;
 }
 
 /* ====== 강좌 섹션 공통 ====== */
@@ -93,7 +92,7 @@ section h2 {
   font-size: 20px;
   font-weight: 600;
   color: #001c53;
-  border-left: 3px solid #3B82F6;
+  border-left: 3px solid #3d86c6;
   padding-left: 12px;
   margin-bottom: 24px;
 }
@@ -107,7 +106,7 @@ section h2 {
 
 .course-card {
   background-color: white;
-  border-radius: 7px;
+  border-radius: 8px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
   overflow: hidden;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -150,8 +149,6 @@ section h2 {
   /* 비율 고정 */
   object-fit: cover;
   /* 꽉 차게, 잘 보이게 */
-  border-radius: 8px;
-  /* 기존 둥근모서리 유지 */
 }
 
 /* 이미지가 없을 때 "썸네일 없음" span을 썸네일처럼 보이게 */
@@ -166,7 +163,6 @@ section h2 {
   /* 연한 회색 배경 */
   color: #6b7280;
   /* 텍스트 색상 */
-  border-radius: 8px;
   font-size: 14px;
 }
 
