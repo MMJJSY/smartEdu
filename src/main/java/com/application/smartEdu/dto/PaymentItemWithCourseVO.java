@@ -14,7 +14,7 @@ public class PaymentItemWithCourseVO {
     private int paymentId;
     private int studentId;
     private int courseId;
-    private Long courseAmount;         // CAST로 숫자 매핑
+    private Long courseAmount;         
     private PaymentStatus status;      // NORMAL / CANCELLED / REFUNDED
     private Timestamp createdAt;
 
@@ -23,6 +23,5 @@ public class PaymentItemWithCourseVO {
     private CourseCategory courseCategory;
     private String instructorName;
 
-    // 화면 편의용(서비스에서 세팅 권장)
     private Boolean refundable;        // 14일 이내 & 시청 이전 등 정책 반영
 }

@@ -45,7 +45,7 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     public void removeFromCart(int studentId, int courseId) throws SQLException {
-        int deleted = cartDAO.deleteCartByStudentAndCourse(studentId, courseId);
+        cartDAO.deleteCartByStudentAndCourse(studentId, courseId);
     }
 
     // 장바구니 총액(강좌 가격 기준)

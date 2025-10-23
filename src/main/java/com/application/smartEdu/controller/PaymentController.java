@@ -74,7 +74,7 @@ public class PaymentController {
         return "redirect:/cart";
     }
 
-    // ✅ 강의 시청 시 결제 상태 변경 (NORMAL -> CANCELLED)
+    // 강의 시청 시 결제 상태 변경 (NORMAL -> CANCELLED)
     @PostMapping("/cancelOnView")
     @ResponseBody
     public String cancelPaymentOnView(@RequestParam int courseId, HttpSession session) {

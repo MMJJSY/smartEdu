@@ -30,7 +30,6 @@ public class CartController {
     @Autowired
     private PaymentService paymentService;
 
-    // 공통: 세션에서 로그인 사용자 ID 꺼내기 (PaymentController와 동일 패턴)
     private Integer getLoginStudentId(HttpSession session) {
         Object obj = session.getAttribute("loginUser");
         if (obj instanceof MemberVO m) {
@@ -55,9 +54,8 @@ public class CartController {
     }
 
     // ====== 담기(업서트) ======
-    // CartController.java
         @PostMapping("/add")
-        @ResponseBody   // ✅ 핵심! fetch로 받기 때문에 HTML이 아닌 응답만 내려야 함
+        @ResponseBody
         public String addToCart(@ModelAttribute CartAddCommand cmd, HttpSession session) throws SQLException {
 
             Integer studentId = getLoginStudentId(session);
@@ -120,7 +118,7 @@ public class CartController {
     public Map<String, Object> addToCartAjax(@ModelAttribute CartAddCommand cmd, HttpSession session) throws SQLException {
         Integer studentId = getLoginStudentId(session);
         if (studentId == null) {
-            // 로그인 필요 시 클라이언트가 알아서 이동하도록 힌트만 제공
+            
             return Map.of(
                 "ok", false,
                 "needLogin", true,
