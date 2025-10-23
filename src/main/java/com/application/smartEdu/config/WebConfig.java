@@ -34,10 +34,10 @@ public class WebConfig implements WebMvcConfigurer {
 
         }
 
-        @Override
-        public void addViewControllers(ViewControllerRegistry registry) {
-                registry.addRedirectViewController("/", "/common/main");
-                // 필요 시 다음도 추가:
-                // registry.addRedirectViewController("/common", "/common/main");
-        }
+        // @Override
+        // public void addViewControllers(ViewControllerRegistry registry) {
+        //         registry.addRedirectViewController("/", "/common/main");
+        //         // 필요 시 다음도 추가:
+        //         // registry.addRedirectViewController("/common", "/common/main");
+        // }
 }
