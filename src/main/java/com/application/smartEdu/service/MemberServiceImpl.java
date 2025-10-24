@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.application.smartEdu.command.PageMaker;
@@ -24,13 +24,16 @@ public class MemberServiceImpl implements MemberService {
     @Autowired
     private MemberDAO memberDAO;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public MemberVO login(String email, String pwd) throws SQLException, NotFoundEmailException,
             InvalidPasswordException, InstructorPendingException, InstructorRejectedException {
         MemberVO member = memberDAO.selectMemberByEmail(email);
         if (member == null)
             throw new NotFoundEmailException();
-        if (member.getPwd() == null || !member.getPwd().equals(pwd))
+        if (member.getPwd() == null || !passwordEncoder.matches(pwd, member.getPwd()))
             throw new InvalidPasswordException();
 
         // 강사
@@ -64,6 +67,8 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void regist(MemberVO member) throws SQLException {
 
+        String encodePwd = passwordEncoder.encode(member.getPwd());
+        member.setPwd(encodePwd);
         memberDAO.insertMember(member);
 
     }

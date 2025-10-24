@@ -37,7 +37,7 @@
             <td th:text="${q.courseName}"></td>
             <td>
               <span th:text="${q.title}"></span>
-              <span th:text="'[' + ${q.commentCount} + ']'"></span>
+              <span th:text="'[' + ${q.commentCount} + ']'" style="color: blue"></span>
             </td>
             <td th:text="${q.memberName}"></td>
             <td th:text="${#temporals.format(q.createdAt, 'yyyy-MM-dd')}"></td>
