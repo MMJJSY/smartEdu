@@ -1,6 +1,7 @@
 package com.application.smartEdu.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +19,14 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/mypage")
 public class MyPageController {
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
     private MemberService memberService;
+
+    MyPageController(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     /**
      * 권한별 대시보드 분기
@@ -95,13 +102,30 @@ public class MyPageController {
         }
 
         MemberVO member = memberService.getMember(loginUser.getEmail());
+        if(member == null) {
+            rttr.addFlashAttribute("msg", "회원 정보를 찾을 수 없습니다.");
+            return "redirect:/common/loginForm";
+        } 
+        String dbPwd = member.getPwd();
+        boolean matches = false;
 
-        if (member != null && member.getPwd().equals(pwd)) {
+        if (dbPwd.startsWith("$2a$") || dbPwd.startsWith("$2a$") || dbPwd.startsWith("$2y$")) {
+            matches = passwordEncoder.matches(pwd, dbPwd);
+        } else if (dbPwd.equals(pwd)) {
+            matches = true;
+
+            String encoded = passwordEncoder.encode(pwd);
+            member.setPwd(encoded);
+            memberService.modify(member);
+        } 
+
+        if (matches) {
             return "redirect:/mypage/pwdedit";
         } else {
-            rttr.addFlashAttribute("msg", "비밀번호가 올바르지 않습니다.");
+            rttr.addFlashAttribute("msg","비밀번호가 올바르지 않습니다.");
             return "redirect:/mypage/pwdcheck";
         }
+        
     }
 
     /**
@@ -136,6 +160,9 @@ public class MyPageController {
             memberService.changePassword(loginUser.getEmail(), newPwd);
             loginUser.setPwd(newPwd);
             rttr.addFlashAttribute("msg", "비밀번호가 성공적으로 변경되었습니다.");
+
+            loginUser.setPwd(passwordEncoder.encode(newPwd));
+
             return "redirect:/mypage/pwdcheck";
         } catch (NotFoundEmailException e) {
             rttr.addFlashAttribute("msg", "회원 정보를 찾을 수 없습니다.");

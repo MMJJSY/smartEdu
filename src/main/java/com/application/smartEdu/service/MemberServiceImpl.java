@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.application.smartEdu.command.PageMaker;
 import com.application.smartEdu.dao.MemberDAO;
@@ -28,6 +29,7 @@ public class MemberServiceImpl implements MemberService {
     private PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public MemberVO login(String email, String pwd) throws SQLException, NotFoundEmailException,
             InvalidPasswordException, InstructorPendingException, InstructorRejectedException {
 
@@ -43,7 +45,7 @@ public class MemberServiceImpl implements MemberService {
         boolean matches = false;
 
       
-        if (dbPwd.startsWith("$2a$")) {
+        if (dbPwd.startsWith("$2a$") || dbPwd.startsWith("$2a$") || dbPwd.startsWith("$2y$")) {
             matches = passwordEncoder.matches(pwd, dbPwd);
         }
    
@@ -118,8 +120,8 @@ public class MemberServiceImpl implements MemberService {
         if (current == null) {
             throw new NotFoundEmailException();
         }
-
-        current.setPwd(newPwd);
+        String encodedPwd = passwordEncoder.encode(newPwd);
+        current.setPwd(encodedPwd);
         modify(current);
     }
 
