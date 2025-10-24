@@ -52,7 +52,7 @@
         </div>
 
         <button type="submit" class="submit-btn">승인요청</button>
-        <button type="button" class="cancel-btn" onclick="location.href='login.html'">취소</button>
+        <button type="button" class="cancel-btn" th:onclick="|location.href='@{/common/loginForm}'|">취소</button>
     </form>
 
     <script th:src="@{/js/register.js}"></script>
