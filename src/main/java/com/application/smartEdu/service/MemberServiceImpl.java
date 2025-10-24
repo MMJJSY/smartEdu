@@ -30,13 +30,34 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberVO login(String email, String pwd) throws SQLException, NotFoundEmailException,
             InvalidPasswordException, InstructorPendingException, InstructorRejectedException {
+
         MemberVO member = memberDAO.selectMemberByEmail(email);
+
         if (member == null)
             throw new NotFoundEmailException();
-        if (member.getPwd() == null || !passwordEncoder.matches(pwd, member.getPwd()))
+
+        String dbPwd = member.getPwd();
+        if (dbPwd == null)
             throw new InvalidPasswordException();
 
-        // 강사
+        boolean matches = false;
+
+      
+        if (dbPwd.startsWith("$2a$")) {
+            matches = passwordEncoder.matches(pwd, dbPwd);
+        }
+   
+        else if (dbPwd.equals(pwd)) {
+            matches = true;
+            String encoded = passwordEncoder.encode(pwd);
+            member.setPwd(encoded);
+            memberDAO.updateMember(member);
+        }
+
+        if (!matches)
+            throw new InvalidPasswordException();
+
+        
         if (member.getRole() == Role.INSTRUCTOR) {
             InstructorVO instructor = memberDAO.selectInstructorById(member.getMemberId());
             if (instructor != null) {
@@ -47,7 +68,6 @@ public class MemberServiceImpl implements MemberService {
                     throw new InstructorRejectedException();
                 }
             }
-
         }
 
         return member;
